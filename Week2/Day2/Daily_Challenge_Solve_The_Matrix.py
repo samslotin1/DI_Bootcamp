@@ -15,7 +15,10 @@ matrix = []
 for line in lines:
     matrix.append(list(line))
 
-print(matrix)
+max_len = max(len(row) for row in matrix)
+for row in matrix:
+    while len(row) < max_len:
+        row.append(" ")
 
 # Step 2
 decoded = ""
