@@ -1,0 +1,1111 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "APYSOufmMZ7p"
+      },
+      "source": [
+        "# Air Traffic Data Analysis - Student Exercise\n",
+        "## Inferential Statistics and Regression Analysis\n",
+        "\n",
+        "**Student Template - Complete the TODO sections**\n",
+        "\n",
+        "In this exercise, you will analyze air traffic data using inferential statistics and regression techniques. Follow the instructions and complete each section marked with `#TODO`.\n",
+        "\n",
+        "### Dataset Description:\n",
+        "- **Dom_Pax**: Domestic Air Travel Passengers\n",
+        "- **Int_Pax**: International Air Travel Passengers  \n",
+        "- **Pax**: Total Air Travel Passengers\n",
+        "- **Dom_Flt**: Number of Flights (Domestic)\n",
+        "- **Int_Flt**: Number of Flights (International)\n",
+        "- **Flt**: Number of Flights (Total)\n",
+        "- **Dom_RPM**: Revenue Passenger-miles (Domestic)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "\n",
+        "from scipy import stats\n",
+        "\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.linear_model import LinearRegression\n",
+        "from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error\n",
+        "from sklearn.preprocessing import StandardScaler"
+      ],
+      "metadata": {
+        "id": "Zol6x6vbW48i"
+      },
+      "execution_count": 29,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "AGPdhe11MZ7v"
+      },
+      "source": [
+        "## 1. Setup and Data Loading"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 30,
+      "metadata": {
+        "id": "Zwh3nkM9MZ7x"
+      },
+      "outputs": [],
+      "source": [
+        "# TODO: Import necessary libraries\n",
+        "# Hint: You'll need pandas, numpy, matplotlib, seaborn, scipy.stats, and sklearn modules\n",
+        "# Import pandas as pd, numpy as np, matplotlib.pyplot as plt, seaborn as sns\n",
+        "# From scipy import stats\n",
+        "# From sklearn.model_selection import train_test_split\n",
+        "# From sklearn.linear_model import LinearRegression\n",
+        "# From sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error\n",
+        "# From sklearn.preprocessing import StandardScaler\n",
+        "\n",
+        "# Your code here:\n",
+        "\n",
+        "\n",
+        "# Set up plotting style (optional)\n",
+        "plt.style.use('default')\n",
+        "sns.set_palette(\"husl\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 31,
+      "metadata": {
+        "id": "OxyKAAB_MZ7z",
+        "outputId": "aacc4738-bcc7-4987-b547-3062dfd619cf",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 106
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "SyntaxError",
+          "evalue": "invalid syntax (3942354201.py, line 7)",
+          "traceback": [
+            "\u001b[0;36m  File \u001b[0;32m\"/tmp/ipykernel_2604/3942354201.py\"\u001b[0;36m, line \u001b[0;32m7\u001b[0m\n\u001b[0;31m    df = # TODO: Complete this line\u001b[0m\n\u001b[0m         ^\u001b[0m\n\u001b[0;31mSyntaxError\u001b[0m\u001b[0;31m:\u001b[0m invalid syntax\n"
+          ]
+        }
+      ],
+      "source": [
+        "# TODO: Load the dataset\n",
+        "# Hint: Use pd.read_csv() to load 'air_traffic_data.csv'\n",
+        "# If the file doesn't exist, the code below will create sample data for you\n",
+        "\n",
+        "try:\n",
+        "    # Your code to load the dataset:\n",
+        "    df = # TODO: Complete this line\n",
+        "    print(\"Dataset loaded successfully!\")\n",
+        "    print(f\"Shape: {df.shape}\")\n",
+        "except FileNotFoundError:\n",
+        "    print(\"Creating sample air traffic data...\")\n",
+        "    import numpy as np\n",
+        "    import pandas as pd\n",
+        "\n",
+        "    # Create sample data\n",
+        "    np.random.seed(42)\n",
+        "    n_samples = 200\n",
+        "\n",
+        "    # Generate correlated data\n",
+        "    dom_flights = np.random.normal(15000, 3000, n_samples)\n",
+        "    int_flights = np.random.normal(8000, 2000, n_samples)\n",
+        "\n",
+        "    dom_pax = dom_flights * np.random.normal(12, 2, n_samples) + np.random.normal(0, 10000, n_samples)\n",
+        "    int_pax = int_flights * np.random.normal(15, 3, n_samples) + np.random.normal(0, 15000, n_samples)\n",
+        "\n",
+        "    dom_rpm = dom_pax * np.random.normal(800, 100, n_samples)\n",
+        "\n",
+        "    # Ensure positive values\n",
+        "    dom_flights = np.abs(dom_flights)\n",
+        "    int_flights = np.abs(int_flights)\n",
+        "    dom_pax = np.abs(dom_pax)\n",
+        "    int_pax = np.abs(int_pax)\n",
+        "    dom_rpm = np.abs(dom_rpm)\n",
+        "\n",
+        "    df = pd.DataFrame({\n",
+        "        'Dom_Flt': dom_flights.astype(int),\n",
+        "        'Int_Flt': int_flights.astype(int),\n",
+        "        'Flt': (dom_flights + int_flights).astype(int),\n",
+        "        'Dom_Pax': dom_pax.astype(int),\n",
+        "        'Int_Pax': int_pax.astype(int),\n",
+        "        'Pax': (dom_pax + int_pax).astype(int),\n",
+        "        'Dom_RPM': dom_rpm.astype(int)\n",
+        "    })\n",
+        "\n",
+        "    print(\"Sample data created successfully!\")\n",
+        "    print(f\"Shape: {df.shape}\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "\n",
+        "try:\n",
+        "    df = pd.read_csv(\"air_traffic_data.csv\")\n",
+        "    print(\"Dataset loaded successfully!\")\n",
+        "    print(f\"Shape: {df.shape}\")\n",
+        "\n",
+        "except FileNotFoundError:\n",
+        "    print(\"Creating sample air traffic data...\")\n",
+        "\n",
+        "    np.random.seed(42)\n",
+        "    n_samples = 200\n",
+        "\n",
+        "    dom_flights = np.random.normal(15000, 3000, n_samples)\n",
+        "    int_flights = np.random.normal(8000, 2000, n_samples)\n",
+        "\n",
+        "    dom_pax = dom_flights * np.random.normal(12, 2, n_samples) + np.random.normal(0, 10000, n_samples)\n",
+        "    int_pax = int_flights * np.random.normal(15, 3, n_samples) + np.random.normal(0, 15000, n_samples)\n",
+        "\n",
+        "    dom_rpm = dom_pax * np.random.normal(800, 100, n_samples)\n",
+        "\n",
+        "    dom_flights = np.abs(dom_flights)\n",
+        "    int_flights = np.abs(int_flights)\n",
+        "    dom_pax = np.abs(dom_pax)\n",
+        "    int_pax = np.abs(int_pax)\n",
+        "    dom_rpm = np.abs(dom_rpm)\n",
+        "\n",
+        "    df = pd.DataFrame({\n",
+        "        'Dom_Flt': dom_flights.astype(int),\n",
+        "        'Int_Flt': int_flights.astype(int),\n",
+        "        'Flt': (dom_flights + int_flights).astype(int),\n",
+        "        'Dom_Pax': dom_pax.astype(int),\n",
+        "        'Int_Pax': int_pax.astype(int),\n",
+        "        'Pax': (dom_pax + int_pax).astype(int),\n",
+        "        'Dom_RPM': dom_rpm.astype(int)\n",
+        "    })\n",
+        "\n",
+        "    print(\"Sample data created successfully!\")\n",
+        "    print(f\"Shape: {df.shape}\")"
+      ],
+      "metadata": {
+        "id": "GdV9QD_pYQyJ"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.head()"
+      ],
+      "metadata": {
+        "id": "HBaI6UHHYSop"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.info()"
+      ],
+      "metadata": {
+        "id": "LG39ALbmYZPC"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.describe()"
+      ],
+      "metadata": {
+        "id": "JyuNEu4KYsGK"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "The Pax column represents total passengers. The average total passenger count is about 302,256. The minimum passenger count is 163,559, and the maximum is 526,087. This shows that passenger traffic varies widely across the dataset."
+      ],
+      "metadata": {
+        "id": "1bq96Ir1cEsF"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.isnull().sum()"
+      ],
+      "metadata": {
+        "id": "CMYKsgOSYvVS"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.corr()"
+      ],
+      "metadata": {
+        "id": "qO3xSGZPcHY1"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "QUMhQQ8WMZ70"
+      },
+      "source": [
+        "## 2. Exploratory Data Analysis"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "cQwbgUAjdn-a"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "zSh0Z_xaMZ71"
+      },
+      "outputs": [],
+      "source": [
+        "# TODO: Display basic information about the dataset\n",
+        "# Hint: Use df.info(), df.head(), and df.describe() to explore the data\n",
+        "\n",
+        "print(\"Dataset Info:\")\n",
+        "# Your code here:\n",
+        "\n",
+        "\n",
+        "print(\"\\nFirst 5 rows:\")\n",
+        "# Your code here:\n",
+        "\n",
+        "\n",
+        "print(\"\\nBasic Statistics:\")\n",
+        "# Your code here:\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "4nBsUwdeMZ73"
+      },
+      "outputs": [],
+      "source": [
+        "# TODO: Check for missing values and handle them if necessary\n",
+        "# Hint: Use df.isnull().sum() to check for missing values\n",
+        "# If there are missing values, decide whether to drop them (dropna()) or fill them (fillna())\n",
+        "\n",
+        "print(\"Missing values:\")\n",
+        "# Your code here:\n",
+        "\n",
+        "\n",
+        "# Handle missing values if any (uncomment and complete if needed)\n",
+        "# if df.isnull().sum().sum() > 0:\n",
+        "#     print(\"\\nHandling missing values...\")\n",
+        "#     df = # TODO: Complete this line (use dropna() or fillna())\n",
+        "#     print(f\"New shape after handling missing values: {df.shape}\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "TM0pymBSMZ74"
+      },
+      "outputs": [],
+      "source": [
+        "# TODO: Create and analyze correlation matrix\n",
+        "# Hint: Use df.corr() to calculate correlations and sns.heatmap() to visualize\n",
+        "\n",
+        "plt.figure(figsize=(10, 8))\n",
+        "# Calculate correlation matrix:\n",
+        "correlation_matrix = # TODO: Complete this line\n",
+        "\n",
+        "# Create heatmap:\n",
+        "# TODO: Use sns.heatmap() with parameters: annot=True, cmap='coolwarm', center=0, square=True, linewidths=0.5\n",
+        "\n",
+        "\n",
+        "plt.title('Correlation Matrix of Air Traffic Variables')\n",
+        "plt.tight_layout()\n",
+        "plt.show()\n",
+        "\n",
+        "# TODO: Find and print the strongest correlations\n",
+        "# Hint: Look at the correlation matrix values (excluding diagonal)\n",
+        "print(\"Strongest correlations:\")\n",
+        "# Your analysis here:\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "corr_matrix = df.corr()\n",
+        "corr_matrix"
+      ],
+      "metadata": {
+        "id": "B6Uez2LZd7K6"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "plt.figure(figsize=(10, 6))\n",
+        "sns.heatmap(corr_matrix, annot=True, cmap=\"coolwarm\", fmt=\".2f\")\n",
+        "plt.title(\"Correlation Heatmap of Air Traffic Variables\")\n",
+        "plt.show()"
+      ],
+      "metadata": {
+        "id": "5dOTOPxGd95p"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "The correlation matrix shows that all variables have positive relationships with total passengers (Pax). The strongest useful correlation with Pax is Dom_Pax at approximately 0.756. Dom_RPM, Int_Pax, and Flt also show moderate to strong positive correlations with Pax. This means that as these variables increase, total passengers tend to increase as well.\n",
+        "\n",
+        "However, the relationship between Pax and Dom_Pax or Int_Pax should be interpreted carefully because Pax is calculated from domestic and international passengers. Therefore, these high correlations are expected."
+      ],
+      "metadata": {
+        "id": "XtlqlhCjeENY"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pax_corr = corr_matrix[\"Pax\"].drop(\"Pax\").sort_values(ascending=False)\n",
+        "pax_corr"
+      ],
+      "metadata": {
+        "id": "yrQKgMcleBai"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "v-yhEZKzMZ75"
+      },
+      "source": [
+        "## 3. Hypothesis Testing"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from scipy import stats\n",
+        "\n",
+        "alpha = 0.05\n",
+        "\n",
+        "print(\"Hypothesis Test 1: Domestic vs International Passengers\")\n",
+        "print(\"H0: Mean domestic passengers = Mean international passengers\")\n",
+        "print(\"H1: Mean domestic passengers ≠ Mean international passengers\")\n",
+        "print(\"Significance level: α = 0.05\")\n",
+        "\n",
+        "t_stat, p_value = stats.ttest_ind(df[\"Dom_Pax\"], df[\"Int_Pax\"])\n",
+        "\n",
+        "print(f\"\\nResults:\")\n",
+        "print(f\"T-statistic: {t_stat:.4f}\")\n",
+        "print(f\"P-value: {p_value:.6f}\")\n",
+        "\n",
+        "print(f\"Mean Domestic Passengers: {df['Dom_Pax'].mean():.0f}\")\n",
+        "print(f\"Mean International Passengers: {df['Int_Pax'].mean():.0f}\")\n",
+        "\n",
+        "if p_value < alpha:\n",
+        "    print(f\"\\nConclusion: Reject H0 (p < {alpha})\")\n",
+        "    print(\"There is a statistically significant difference between mean domestic passengers and mean international passengers.\")\n",
+        "else:\n",
+        "    print(f\"\\nConclusion: Fail to reject H0 (p >= {alpha})\")\n",
+        "    print(\"There is not enough evidence to say that mean domestic passengers and mean international passengers are different.\")\n",
+        "\n",
+        "\n",
+        "print(\"\\nHypothesis Test 2: Correlation between Total Passengers and Total Flights\")\n",
+        "print(\"H0: There is no correlation between total passengers and total flights (ρ = 0)\")\n",
+        "print(\"H1: There is a correlation between total passengers and total flights (ρ ≠ 0)\")\n",
+        "print(\"Significance level: α = 0.05\")\n",
+        "\n",
+        "correlation_coef, p_value_corr = stats.pearsonr(df[\"Pax\"], df[\"Flt\"])\n",
+        "\n",
+        "print(f\"\\nResults:\")\n",
+        "print(f\"Correlation coefficient: {correlation_coef:.4f}\")\n",
+        "print(f\"P-value: {p_value_corr:.6f}\")\n",
+        "\n",
+        "if p_value_corr < alpha:\n",
+        "    print(f\"\\nConclusion: Reject H0 (p < {alpha})\")\n",
+        "    print(\"There is a statistically significant correlation between total passengers and total flights.\")\n",
+        "    if correlation_coef > 0:\n",
+        "        print(\"The correlation is positive, meaning that as total flights increase, total passengers also tend to increase.\")\n",
+        "    else:\n",
+        "        print(\"The correlation is negative, meaning that as total flights increase, total passengers tend to decrease.\")\n",
+        "else:\n",
+        "    print(f\"\\nConclusion: Fail to reject H0 (p >= {alpha})\")\n",
+        "    print(\"There is not enough evidence to say there is a significant correlation between total passengers and total flights.\")"
+      ],
+      "metadata": {
+        "id": "x3p1VhkJd4dv"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Hypothesis Test 1 compared the mean number of domestic passengers and international passengers. The mean domestic passenger count was 175,331, while the mean international passenger count was 126,924. The p-value was less than 0.05, so we reject the null hypothesis. This means there is a statistically significant difference between domestic and international passenger averages in this dataset.\n",
+        "\n",
+        "Hypothesis Test 2 tested whether total passengers and total flights are significantly correlated. The correlation coefficient was 0.6592, which shows a moderate-to-strong positive relationship. The p-value was less than 0.05, so we reject the null hypothesis. This means there is a statistically significant positive correlation between total flights and total passengers. In practical terms, as the number of flights increases, total passenger volume also tends to increase."
+      ],
+      "metadata": {
+        "id": "rdI0jIgqe_7m"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "YJGBRIpaMZ79"
+      },
+      "source": [
+        "## 4. Simple Linear Regression"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "SgJyzTXKMZ7-"
+      },
+      "outputs": [],
+      "source": [
+        "# TODO: Build a simple linear regression model\n",
+        "# Goal: Predict Total Passengers from Total Flights\n",
+        "# Hint: Use sklearn's LinearRegression class\n",
+        "\n",
+        "print(\"Simple Linear Regression: Predicting Total Passengers from Total Flights\")\n",
+        "\n",
+        "# Prepare the data:\n",
+        "X_simple = # TODO: Select the feature column (Total Flights)\n",
+        "y_simple = # TODO: Select the target column (Total Passengers)\n",
+        "\n",
+        "# Split the data:\n",
+        "# TODO: Use train_test_split with test_size=0.2, random_state=42\n",
+        "X_train_simple, X_test_simple, y_train_simple, y_test_simple =\n",
+        "\n",
+        "# Create and train the model:\n",
+        "simple_model = # TODO: Create LinearRegression instance\n",
+        "# TODO: Fit the model using X_train_simple and y_train_simple\n",
+        "\n",
+        "\n",
+        "# Make predictions:\n",
+        "y_pred_simple = # TODO: Predict on test data\n",
+        "\n",
+        "# TODO: Calculate performance metrics\n",
+        "# Hint: Use r2_score, mean_squared_error, mean_absolute_error\n",
+        "r2_simple = # TODO: Calculate R² score\n",
+        "mse_simple = # TODO: Calculate MSE\n",
+        "mae_simple = # TODO: Calculate MAE\n",
+        "rmse_simple = # TODO: Calculate RMSE (square root of MSE)\n",
+        "\n",
+        "print(f\"\\nModel Performance:\")\n",
+        "print(f\"R² Score: {r2_simple:.4f}\")\n",
+        "print(f\"Mean Squared Error: {mse_simple:.2f}\")\n",
+        "print(f\"Root Mean Squared Error: {rmse_simple:.2f}\")\n",
+        "print(f\"Mean Absolute Error: {mae_simple:.2f}\")\n",
+        "\n",
+        "# TODO: Print the model equation\n",
+        "# Hint: Use simple_model.intercept_ and simple_model.coef_[0]\n",
+        "print(f\"\\nModel Equation: Passengers = {simple_model.intercept_:.2f} + {simple_model.coef_[0]:.2f} × Flights\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "NzXy6sCwMZ7-"
+      },
+      "outputs": [],
+      "source": [
+        "# TODO: Visualize the simple linear regression results\n",
+        "# Create two plots: scatter plot with regression line and residual plot\n",
+        "\n",
+        "# Plot 1: Scatter plot with regression line\n",
+        "plt.figure(figsize=(12, 5))\n",
+        "\n",
+        "plt.subplot(1, 2, 1)\n",
+        "# TODO: Create scatter plot of actual vs predicted values\n",
+        "# Hint: Use plt.scatter() for actual and predicted points, and plt.plot() for the line\n",
+        "\n",
+        "\n",
+        "\n",
+        "plt.xlabel('Total Flights')\n",
+        "plt.ylabel('Total Passengers')\n",
+        "plt.title('Simple Linear Regression: Total Passengers vs Total Flights')\n",
+        "plt.legend()\n",
+        "plt.grid(True, alpha=0.3)\n",
+        "\n",
+        "# Plot 2: Residual plot\n",
+        "plt.subplot(1, 2, 2)\n",
+        "# TODO: Calculate residuals and create residual plot\n",
+        "# Hint: residuals = actual - predicted\n",
+        "residuals = # TODO: Calculate residuals\n",
+        "\n",
+        "# TODO: Create scatter plot of predicted vs residuals\n",
+        "\n",
+        "plt.axhline(y=0, color='red', linestyle='--')\n",
+        "plt.xlabel('Predicted Values')\n",
+        "plt.ylabel('Residuals')\n",
+        "plt.title('Residual Plot - Simple Linear Regression')\n",
+        "plt.grid(True, alpha=0.3)\n",
+        "\n",
+        "plt.tight_layout()\n",
+        "plt.show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.linear_model import LinearRegression\n",
+        "from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error\n",
+        "import numpy as np\n",
+        "\n",
+        "X = df[[\"Flt\"]]\n",
+        "y = df[\"Pax\"]\n",
+        "\n",
+        "X_train, X_test, y_train, y_test = train_test_split(\n",
+        "    X, y, test_size=0.2, random_state=42\n",
+        ")\n",
+        "\n",
+        "simple_model = LinearRegression()\n",
+        "simple_model.fit(X_train, y_train)\n",
+        "\n",
+        "y_pred_simple = simple_model.predict(X_test)\n",
+        "\n",
+        "r2_simple = r2_score(y_test, y_pred_simple)\n",
+        "mse_simple = mean_squared_error(y_test, y_pred_simple)\n",
+        "rmse_simple = np.sqrt(mse_simple)\n",
+        "mae_simple = mean_absolute_error(y_test, y_pred_simple)\n",
+        "\n",
+        "print(\"Simple Linear Regression Results\")\n",
+        "print(\"R² Score:\", r2_simple)\n",
+        "print(\"MSE:\", mse_simple)\n",
+        "print(\"RMSE:\", rmse_simple)\n",
+        "print(\"MAE:\", mae_simple)\n",
+        "\n",
+        "print(\"Intercept:\", simple_model.intercept_)\n",
+        "print(\"Coefficient:\", simple_model.coef_[0])"
+      ],
+      "metadata": {
+        "id": "_RTPm31HfEMx"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "The simple linear regression model used total flights (Flt) to predict total passengers (Pax). The model had an R² score of 0.2977, meaning it explained about 29.8% of the variation in passenger totals. The RMSE was about 46,280 passengers and the MAE was about 36,607 passengers, showing that the model has a moderate amount of prediction error.\n",
+        "\n",
+        "The model equation is:\n",
+        "\n",
+        "Predicted Pax = 37,484.48 + 11.45 × Flt\n",
+        "\n",
+        "This means that for each additional flight, the model predicts approximately 11.45 additional passengers. However, because the R² score is relatively low, total flights alone is not enough to accurately predict total passenger volume."
+      ],
+      "metadata": {
+        "id": "w91smy9GfLQj"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "plt.figure(figsize=(8, 5))\n",
+        "plt.scatter(X_test, y_test, label=\"Actual\")\n",
+        "plt.plot(X_test, y_pred_simple, label=\"Predicted\")\n",
+        "plt.xlabel(\"Total Flights\")\n",
+        "plt.ylabel(\"Total Passengers\")\n",
+        "plt.title(\"Simple Linear Regression: Total Flights vs Total Passengers\")\n",
+        "plt.legend()\n",
+        "plt.show()"
+      ],
+      "metadata": {
+        "id": "E67aVEfefSMy",
+        "outputId": "94b6d061-7427-4a83-d54a-ed47961242e8",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 775
+        }
+      },
+      "execution_count": 32,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "ValueError",
+          "evalue": "x and y must be the same size",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mValueError\u001b[0m                                Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipykernel_2604/3328016717.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfigure\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfigsize\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m8\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m5\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mscatter\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mX_test\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0my_test\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mlabel\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m\"Actual\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      3\u001b[0m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mplot\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mX_test\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0my_pred_simple\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mlabel\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m\"Predicted\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mxlabel\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Total Flights\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mylabel\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Total Passengers\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.12/dist-packages/matplotlib/_api/deprecation.py\u001b[0m in \u001b[0;36mwrapper\u001b[0;34m(*args, **kwargs)\u001b[0m\n\u001b[1;32m    451\u001b[0m                 \u001b[0;34m\"parameter will become keyword-only in %(removal)s.\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    452\u001b[0m                 name=name, obj_type=f\"parameter of {func.__name__}()\")\n\u001b[0;32m--> 453\u001b[0;31m         \u001b[0;32mreturn\u001b[0m \u001b[0mfunc\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0margs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    454\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    455\u001b[0m     \u001b[0;31m# Don't modify *func*'s signature, as boilerplate.py needs it.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.12/dist-packages/matplotlib/pyplot.py\u001b[0m in \u001b[0;36mscatter\u001b[0;34m(x, y, s, c, marker, cmap, norm, vmin, vmax, alpha, linewidths, edgecolors, colorizer, plotnonfinite, data, **kwargs)\u001b[0m\n\u001b[1;32m   3937\u001b[0m     \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   3938\u001b[0m ) -> PathCollection:\n\u001b[0;32m-> 3939\u001b[0;31m     __ret = gca().scatter(\n\u001b[0m\u001b[1;32m   3940\u001b[0m         \u001b[0mx\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   3941\u001b[0m         \u001b[0my\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.12/dist-packages/matplotlib/_api/deprecation.py\u001b[0m in \u001b[0;36mwrapper\u001b[0;34m(*args, **kwargs)\u001b[0m\n\u001b[1;32m    451\u001b[0m                 \u001b[0;34m\"parameter will become keyword-only in %(removal)s.\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    452\u001b[0m                 name=name, obj_type=f\"parameter of {func.__name__}()\")\n\u001b[0;32m--> 453\u001b[0;31m         \u001b[0;32mreturn\u001b[0m \u001b[0mfunc\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0margs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    454\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    455\u001b[0m     \u001b[0;31m# Don't modify *func*'s signature, as boilerplate.py needs it.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.12/dist-packages/matplotlib/__init__.py\u001b[0m in \u001b[0;36minner\u001b[0;34m(ax, data, *args, **kwargs)\u001b[0m\n\u001b[1;32m   1519\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0minner\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0max\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m*\u001b[0m\u001b[0margs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mdata\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mNone\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1520\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mdata\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1521\u001b[0;31m             return func(\n\u001b[0m\u001b[1;32m   1522\u001b[0m                 \u001b[0max\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1523\u001b[0m                 \u001b[0;34m*\u001b[0m\u001b[0mmap\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcbook\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msanitize_sequence\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0margs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.12/dist-packages/matplotlib/axes/_axes.py\u001b[0m in \u001b[0;36mscatter\u001b[0;34m(self, x, y, s, c, marker, cmap, norm, vmin, vmax, alpha, linewidths, edgecolors, colorizer, plotnonfinite, **kwargs)\u001b[0m\n\u001b[1;32m   4898\u001b[0m         \u001b[0my\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mma\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mravel\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0my\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   4899\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mx\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msize\u001b[0m \u001b[0;34m!=\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msize\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 4900\u001b[0;31m             \u001b[0;32mraise\u001b[0m \u001b[0mValueError\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"x and y must be the same size\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   4901\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   4902\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0ms\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mValueError\u001b[0m: x and y must be the same size"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<Figure size 800x500 with 1 Axes>"
+            ],
+            "image/png": "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t7c3iouLD1iTy+Uil8vlszUAAI4wed1RLS4ujlmzZkVLS8vAWH9/f7S0tER1dfWQa84///x4+eWXo7+/f2DspZdeiilTpgwZqQAAEDGMX/3X19fH2rVr46c//Wls3749vvGNb0R3d3csWrQoIiIWLFgQy5YtG5j/jW98I/7+97/HDTfcEC+99FJs2LAhVq5cGYsXLx65VwEAwBEn7+9Rrauriz179sSKFSuivb09Zs6cGc3NzQMfsNq1a1cUFv63fysrK+Opp56KJUuWxFlnnRXTpk2LG264IW688caRexUAABxx8v4e1cPB96gCAKTtsH+PKgAAjBWhCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoQqAABJEqoAACRJqAIAkCShCgBAkoYVqk1NTTF9+vQoKSmJqqqq2Lx58yGtW7duXRQUFMS8efOGc1kAAMaRvEN1/fr1UV9fHw0NDbF169aYMWNG1NbWxptvvvm+61577bX49re/HRdeeOGwNwsAwPiRd6jec889cfXVV8eiRYviM5/5TKxZsyaOOeaYeOihhw66pq+vL7761a/GrbfeGieffPIH2jAAAONDXqHa29sbW7ZsiZqamv8+QWFh1NTURGtr60HXff/734/JkyfHlVdeeUjX6enpia6urkEPAADGl7xCde/evdHX1xfl5eWDxsvLy6O9vX3INc8880w8+OCDsXbt2kO+TmNjY5SVlQ08Kisr89kmAABHgFH91P++ffti/vz5sXbt2pg0adIhr1u2bFl0dnYOPHbv3j2KuwQAIEUT8pk8adKkKCoqio6OjkHjHR0dUVFRccD8V155JV577bWYO3fuwFh/f/9/LjxhQrz44otxyimnHLAul8tFLpfLZ2sAABxh8rqjWlxcHLNmzYqWlpaBsf7+/mhpaYnq6uoD5p922mnx/PPPR1tb28Djsssui4svvjja2tr8Sh8AgIPK645qRER9fX0sXLgwZs+eHXPmzInVq1dHd3d3LFq0KCIiFixYENOmTYvGxsYoKSmJM844Y9D6448/PiLigHEAAPj/8g7Vurq62LNnT6xYsSLa29tj5syZ0dzcPPABq127dkVhob/wCgCAD6Ygy7LscG/if+nq6oqysrLo7OyM0tLSw70dAADeYzR6za1PAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEiSUAUAIElCFQCAJAlVAACSJFQBAEjSsEK1qakppk+fHiUlJVFVVRWbN28+6Ny1a9fGhRdeGBMnToyJEydGTU3N+84HAICIYYTq+vXro76+PhoaGmLr1q0xY8aMqK2tjTfffHPI+Zs2bYrLL788fve730Vra2tUVlbGF77whXjjjTc+8OYBADhyFWRZluWzoKqqKs4999y47777IiKiv78/Kisr4/rrr4+lS5f+z/V9fX0xceLEuO+++2LBggWHdM2urq4oKyuLzs7OKC0tzWe7AACMgdHotbzuqPb29saWLVuipqbmv09QWBg1NTXR2tp6SM/x9ttvxzvvvBMnnHDCQef09PREV1fXoAcAAONLXqG6d+/e6Ovri/Ly8kHj5eXl0d7efkjPceONN8bUqVMHxe57NTY2RllZ2cCj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k6+NGzdmy5cvzx5//PEsIrInnnjifefv3LkzO+aYY7L6+vrshRdeyO69996sqKgoa25uzuu6SYTqnDlzssWLFw/8ua+vL5s6dWrW2Ng45Pwvf/nL2aWXXjporKqqKvv6178+qvtkZOR73u+1f//+7Ljjjst++tOfjtYWGUHDOe/9+/dn5513XvbjH/84W7hwoVD9EMn3vH/0ox9lJ598ctbb2ztWW2QE5Xveixcvzj73uc8NGquvr8/OP//8Ud0nI+tQQvW73/1udvrppw8aq6ury2pra/O61mH/1X9vb29s2bIlampqBsYKCwujpqYmWltbh1zT2to6aH5ERG1t7UHnk47hnPd7vf322/HOO+/ECSecMFrbZIQM97y///3vx+TJk+PKK68ci20yQoZz3r/85S+juro6Fi9eHOXl5XHGGWfEypUro6+vb6y2zTAN57zPO++82LJly8DbA3bu3BkbN26MSy65ZEz2zNgZqVbL+2+mGml79+6Nvr6+gb/Z6l3l5eWxY8eOIde0t7cPOb+9vX3U9snIGM55v9eNN94YU6dOPeAHgPQM57yfeeaZePDBB6OtrW0MdshIGs5579y5M37729/GV7/61di4cWO8/PLLcd1118U777wTDQ0NY7Fthmk4533FFVfE3r1744ILLogsy2L//v1x7bXXxk033TQWW2YMHazVurq64l//+lccffTRh/Q8h/2OKuRj1apVsW7dunjiiSeipKTkcG+HEbZv376YP39+rF27NiZNmnS4t8MY6O/vj8mTJ8cDDzwQs2bNirq6uli+fHmsWbPmcG+NUbBp06ZYuXJl3H///bF169Z4/PHHY8OGDXHbbbcd7q2RqMN+R3XSpElRVFQUHR0dg8Y7OjqioqJiyDUVFRV5zScdwznvd911112xatWq+M1vfhNnnXXWaG6TEZLveb/yyivx2muvxdy5cwfG+vv7IyJiwoQJ8eKLL8Ypp5wyuptm2Ibz8z1lypQ46qijoqioaGDs05/+dLS3t0dvb28UFxeP6p4ZvuGc9y233BLz58+Pq666KiIizjzzzOju7o5rrrkmli9fHoWF7p8dKQ7WaqWlpYd8NzUigTuqxcXFMWvWrGhpaRkY6+/vj5aWlqiurh5yTXV19aD5ERFPP/30QeeTjuGcd0TEnXfeGbfddls0NzfH7Nmzx2KrjIB8z/u0006L559/Ptra2gYel112WVx88cXR1tYWlZWVY7l98jScn+/zzz8/Xn755YF/IYmIeOmll2LKlCkiNXHDOe+33377gBh9919S/vMZHY4UI9Zq+X3Oa3SsW7cuy+Vy2cMPP5y98MIL2TXXXJMdf/zxWXt7e5ZlWTZ//vxs6dKlA/P/8Ic/ZBMmTMjuuuuubPv27VlDQ4Ovp/oQyfe8V61alRUXF2ePPfZY9te//nXgsW/fvsP1EshDvuf9Xj71/+GS73nv2rUrO+6447JvfvOb2Ysvvpj96le/yiZPnpzdfvvth+slkId8z7uhoSE77rjjsp/97GfZzp07s1//+tfZKaeckn35y18+XC+BQ7Rv375s27Zt2bZt27KIyO65555s27Zt2euvv55lWZYtXbo0mz9//sD8d7+e6jvf+U62ffv2rKmp6cP79VRZlmX33ntvduKJJ2bFxcXZnDlzsj/+8Y8D/9lFF12ULVy4cND8n//859mpp56aFRcXZ6effnq2YcOGMd4xH0Q+533SSSdlEXHAo6GhYew3zrDk+/P9/wnVD598z/vZZ5/Nqqqqslwul5188snZHXfcke3fv3+Md81w5XPe77zzTva9730vO+WUU7KSkpKssrIyu+6667J//OMfY79x8vK73/1uyP8vfvd8Fy5cmF100UUHrJk5c2ZWXFycnXzyydlPfvKTvK9bkGXutQMAkJ7D/h5VAAAYilAFACBJQhUAgCQJVQAAkiRUAQBIklAFACBJQhUAgCQJVQAAkiRUAQBIklAFACBJQhUAgCQJVQAAkvR/kB9t1Nd2bicAAAAASUVORK5CYII=\n"
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "residuals_simple = y_test - y_pred_simple\n",
+        "\n",
+        "plt.figure(figsize=(8, 5))\n",
+        "plt.scatter(y_pred_simple, residuals_simple)\n",
+        "plt.axhline(y=0, linestyle=\"--\")\n",
+        "plt.xlabel(\"Predicted Passengers\")\n",
+        "plt.ylabel(\"Residuals\")\n",
+        "plt.title(\"Residual Plot for Simple Linear Regression\")\n",
+        "plt.show()"
+      ],
+      "metadata": {
+        "id": "F5bYrRJqfUwR"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "V5hh8AmYMZ7_"
+      },
+      "source": [
+        "## 5. Multiple Linear Regression"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "TBu0ieVbMZ7_"
+      },
+      "outputs": [],
+      "source": [
+        "# TODO: Build a multiple linear regression model\n",
+        "# Goal: Predict Total Passengers using multiple features\n",
+        "# Hint: Avoid using Pax in features since that's our target (multicollinearity)\n",
+        "\n",
+        "print(\"Multiple Linear Regression: Predicting Total Passengers from Multiple Features\")\n",
+        "\n",
+        "# TODO: Select appropriate features\n",
+        "# Hint: Use columns like Dom_Pax, Int_Pax, Dom_Flt, Int_Flt, Dom_RPM (avoid Pax and Flt)\n",
+        "feature_columns = # TODO: List of feature column names\n",
+        "\n",
+        "X_multiple = # TODO: Select features from dataframe\n",
+        "y_multiple = # TODO: Select target variable (Total Passengers)\n",
+        "\n",
+        "print(f\"Features used: {feature_columns}\")\n",
+        "print(f\"Target: Total Passengers (Pax)\")\n",
+        "\n",
+        "# TODO: Split the data\n",
+        "# Hint: Use train_test_split with test_size=0.2, random_state=42\n",
+        "X_train_mult, X_test_mult, y_train_mult, y_test_mult =\n",
+        "\n",
+        "# TODO: Apply feature scaling (recommended for multiple regression)\n",
+        "# Hint: Use StandardScaler\n",
+        "scaler = # TODO: Create StandardScaler instance\n",
+        "X_train_mult_scaled = # TODO: Fit and transform training data\n",
+        "X_test_mult_scaled = # TODO: Transform test data (don't fit again!)\n",
+        "\n",
+        "# TODO: Create and train the multiple regression model\n",
+        "multiple_model = # TODO: Create LinearRegression instance\n",
+        "# TODO: Fit the model\n",
+        "\n",
+        "\n",
+        "# TODO: Make predictions\n",
+        "y_pred_mult = # TODO: Predict on scaled test data\n",
+        "\n",
+        "# TODO: Calculate performance metrics\n",
+        "r2_mult = # TODO: Calculate R² score\n",
+        "mse_mult = # TODO: Calculate MSE\n",
+        "mae_mult = # TODO: Calculate MAE\n",
+        "rmse_mult = # TODO: Calculate RMSE\n",
+        "\n",
+        "print(f\"\\nModel Performance:\")\n",
+        "print(f\"R² Score: {r2_mult:.4f}\")\n",
+        "print(f\"Mean Squared Error: {mse_mult:.2f}\")\n",
+        "print(f\"Root Mean Squared Error: {rmse_mult:.2f}\")\n",
+        "print(f\"Mean Absolute Error: {mae_mult:.2f}\")\n",
+        "\n",
+        "# TODO: Display feature coefficients\n",
+        "print(f\"\\nFeature Coefficients (after scaling):\")\n",
+        "for feature, coef in zip(feature_columns, multiple_model.coef_):\n",
+        "    print(f\"{feature}: {coef:.4f}\")\n",
+        "print(f\"Intercept: {multiple_model.intercept_:.2f}\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "VfaFNVHuMZ8A"
+      },
+      "outputs": [],
+      "source": [
+        "# TODO: Visualize multiple regression results\n",
+        "# Create actual vs predicted plot and residual plot\n",
+        "\n",
+        "plt.figure(figsize=(12, 5))\n",
+        "\n",
+        "# Plot 1: Actual vs Predicted\n",
+        "plt.subplot(1, 2, 1)\n",
+        "# TODO: Create scatter plot of actual vs predicted values\n",
+        "# TODO: Add a diagonal reference line (perfect prediction line)\n",
+        "\n",
+        "\n",
+        "plt.xlabel('Actual Total Passengers')\n",
+        "plt.ylabel('Predicted Total Passengers')\n",
+        "plt.title('Actual vs Predicted - Multiple Regression')\n",
+        "plt.grid(True, alpha=0.3)\n",
+        "\n",
+        "# Plot 2: Residual plot\n",
+        "plt.subplot(1, 2, 2)\n",
+        "# TODO: Calculate residuals and create residual plot\n",
+        "residuals_mult = # TODO: Calculate residuals\n",
+        "\n",
+        "# TODO: Create scatter plot of predicted vs residuals\n",
+        "\n",
+        "plt.axhline(y=0, color='red', linestyle='--')\n",
+        "plt.xlabel('Predicted Values')\n",
+        "plt.ylabel('Residuals')\n",
+        "plt.title('Residual Plot - Multiple Regression')\n",
+        "plt.grid(True, alpha=0.3)\n",
+        "\n",
+        "plt.tight_layout()\n",
+        "plt.show()"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "features = [\"Dom_Pax\", \"Int_Pax\", \"Dom_Flt\", \"Int_Flt\", \"Dom_RPM\"]\n",
+        "\n",
+        "X = df[features]\n",
+        "y = df[\"Pax\"]\n",
+        "\n",
+        "X_train, X_test, y_train, y_test = train_test_split(\n",
+        "    X, y, test_size=0.2, random_state=42\n",
+        ")\n",
+        "\n",
+        "scaler = StandardScaler()\n",
+        "\n",
+        "X_train_scaled = scaler.fit_transform(X_train)\n",
+        "X_test_scaled = scaler.transform(X_test)\n",
+        "\n",
+        "multiple_model = LinearRegression()\n",
+        "multiple_model.fit(X_train_scaled, y_train)\n",
+        "\n",
+        "y_pred_multiple = multiple_model.predict(X_test_scaled)\n",
+        "\n",
+        "r2_multiple = r2_score(y_test, y_pred_multiple)\n",
+        "mse_multiple = mean_squared_error(y_test, y_pred_multiple)\n",
+        "rmse_multiple = np.sqrt(mse_multiple)\n",
+        "mae_multiple = mean_absolute_error(y_test, y_pred_multiple)\n",
+        "\n",
+        "print(\"Multiple Linear Regression Results\")\n",
+        "print(\"R² Score:\", r2_multiple)\n",
+        "print(\"MSE:\", mse_multiple)\n",
+        "print(\"RMSE:\", rmse_multiple)\n",
+        "print(\"MAE:\", mae_multiple)\n",
+        "\n",
+        "coefficients = pd.DataFrame({\n",
+        "    \"Feature\": features,\n",
+        "    \"Coefficient\": multiple_model.coef_\n",
+        "})\n",
+        "\n",
+        "coefficients"
+      ],
+      "metadata": {
+        "id": "K1s2YEaVfZOd"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "The multiple linear regression model used Dom_Pax, Int_Pax, Dom_Flt, Int_Flt, and Dom_RPM to predict total passengers (Pax). The model performed extremely well, with an R² score very close to 1.0, RMSE of about 0.51, and MAE of about 0.49. This means the model’s predictions were almost identical to the actual values.\n",
+        "\n",
+        "However, this very high performance should be interpreted carefully. Pax is calculated from Dom_Pax and Int_Pax, so the model is using variables that directly make up the target variable. This creates a data leakage issue and explains why the model performs almost perfectly.\n",
+        "\n",
+        "Because the features were scaled using StandardScaler, the coefficients are based on standardized feature values rather than the original units."
+      ],
+      "metadata": {
+        "id": "x4LzubK5fjbq"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "zHzS_ayMMZ8C"
+      },
+      "source": [
+        "## 6. Model Comparison and Analysis"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "N7UUn-vxMZ8C"
+      },
+      "outputs": [],
+      "source": [
+        "# TODO: Compare the performance of both models\n",
+        "# Create a comparison table and determine which model performs better\n",
+        "\n",
+        "print(\"Model Comparison:\")\n",
+        "print(\"=\" * 50)\n",
+        "print(f\"{'Metric':<25} {'Simple Regression':<20} {'Multiple Regression':<20}\")\n",
+        "print(\"=\" * 50)\n",
+        "\n",
+        "# TODO: Print comparison of R², RMSE, and MAE\n",
+        "# Hint: Use the metrics calculated in previous sections\n",
+        "\n",
+        "\n",
+        "\n",
+        "print(\"=\" * 50)\n",
+        "\n",
+        "# TODO: Determine which model performs better based on R²\n",
+        "# Calculate the improvement percentage\n",
+        "if r2_mult > r2_simple:\n",
+        "    better_model = \"Multiple Regression\"\n",
+        "    improvement = # TODO: Calculate percentage improvement\n",
+        "else:\n",
+        "    better_model = \"Simple Regression\"\n",
+        "    improvement = # TODO: Calculate percentage improvement\n",
+        "\n",
+        "print(f\"\\nBest Model: {better_model}\")\n",
+        "print(f\"R² Improvement: {improvement:.2f}%\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "comparison = pd.DataFrame({\n",
+        "    \"Model\": [\"Simple Linear Regression\", \"Multiple Linear Regression\"],\n",
+        "    \"R2\": [r2_simple, r2_multiple],\n",
+        "    \"RMSE\": [rmse_simple, rmse_multiple],\n",
+        "    \"MAE\": [mae_simple, mae_multiple]\n",
+        "})\n",
+        "\n",
+        "comparison"
+      ],
+      "metadata": {
+        "id": "hxkBgJwbfoVJ"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "r2_improvement = ((r2_multiple - r2_simple) / r2_simple) * 100\n",
+        "rmse_improvement = ((rmse_simple - rmse_multiple) / rmse_simple) * 100\n",
+        "mae_improvement = ((mae_simple - mae_multiple) / mae_simple) * 100\n",
+        "\n",
+        "print(\"R² Improvement (%):\", r2_improvement)\n",
+        "print(\"RMSE Improvement (%):\", rmse_improvement)\n",
+        "print(\"MAE Improvement (%):\", mae_improvement)"
+      ],
+      "metadata": {
+        "id": "SFuWGQ4WfqIh"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "The model comparison shows that the multiple linear regression model performed much better than the simple linear regression model. The simple model had an R² score of 0.2977, meaning it explained about 29.8% of the variation in total passengers. Its RMSE was about 46,280 passengers and its MAE was about 36,607 passengers.\n",
+        "\n",
+        "The multiple regression model had an R² score extremely close to 1.0, with an RMSE of about 0.51 and an MAE of about 0.49. This means the multiple regression model predicted total passengers almost perfectly.\n",
+        "\n",
+        "The RMSE and MAE improved by almost 100%, showing a major reduction in prediction error. However, this result should be interpreted carefully because the multiple regression model used Dom_Pax and Int_Pax, and Pax is calculated from those two variables. This creates data leakage, because the model is being given direct components of the target variable.\n"
+      ],
+      "metadata": {
+        "id": "2-9zcxKkgOc9"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "oNral300MZ8D"
+      },
+      "source": [
+        "## 7. Statistical Insights and Conclusions"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "9Ec96OEWMZ8D"
+      },
+      "outputs": [],
+      "source": [
+        "# TODO: Summarize your findings and provide insights\n",
+        "# Include results from hypothesis tests, regression analysis, and key findings\n",
+        "\n",
+        "print(\"STATISTICAL INSIGHTS AND CONCLUSIONS\")\n",
+        "print(\"=\" * 60)\n",
+        "\n",
+        "print(\"\\n1. HYPOTHESIS TESTING RESULTS:\")\n",
+        "# TODO: Summarize your hypothesis test results\n",
+        "print(f\"   • Domestic vs International Passengers: # TODO: Add conclusion\")\n",
+        "print(f\"   • Correlation between Total Passengers and Flights: # TODO: Add conclusion\")\n",
+        "\n",
+        "print(\"\\n2. REGRESSION ANALYSIS:\")\n",
+        "# TODO: Summarize regression model performance\n",
+        "print(f\"   • Simple Linear Regression R²: # TODO: Add R² and interpretation\")\n",
+        "print(f\"   • Multiple Linear Regression R²: # TODO: Add R² and interpretation\")\n",
+        "print(f\"   • Best performing model: # TODO: Add best model\")\n",
+        "\n",
+        "print(\"\\n3. KEY FINDINGS:\")\n",
+        "# TODO: Identify and discuss key findings from your analysis\n",
+        "print(f\"   • # TODO: Add key finding 1\")\n",
+        "print(f\"   • # TODO: Add key finding 2\")\n",
+        "print(f\"   • # TODO: Add key finding 3\")\n",
+        "\n",
+        "print(\"\\n4. RECOMMENDATIONS:\")\n",
+        "# TODO: Provide practical recommendations based on your analysis\n",
+        "print(\"   • # TODO: Add recommendation 1\")\n",
+        "print(\"   • # TODO: Add recommendation 2\")\n",
+        "print(\"   • # TODO: Add recommendation 3\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "The analysis found several important patterns in the air traffic dataset. The dataset had 200 rows and 7 numeric columns, with no missing values. The average total passenger count was about 302,256 passengers, with values ranging from 163,559 to 526,087.\n",
+        "\n",
+        "The hypothesis tests showed that domestic and international passenger averages were significantly different. Domestic passengers had a higher average count than international passengers. The second hypothesis test showed a statistically significant positive correlation between total flights and total passengers. This means that as the number of flights increases, total passenger volume also tends to increase.\n",
+        "\n",
+        "The correlation analysis showed that total passengers had positive relationships with all major air traffic variables. Dom_Pax, Dom_RPM, Int_Pax, and Flt were especially related to Pax. However, correlations involving Dom_Pax and Int_Pax should be interpreted carefully because Pax is calculated from domestic and international passenger counts.\n",
+        "\n",
+        "The simple linear regression model using only total flights had limited performance, with an R² of 0.2977. This suggests that total flights alone is not enough to accurately predict passenger volume. The multiple regression model performed almost perfectly, but this was mainly because it used Dom_Pax and Int_Pax, which directly make up Pax.\n",
+        "\n",
+        "From a business perspective, airlines could use these insights to understand how flight volume relates to passenger demand. However, for a realistic predictive model, airlines should avoid using variables that directly calculate the target. Better future models could use features such as route type, season, ticket prices, airport location, holidays, aircraft capacity, and economic conditions.\n"
+      ],
+      "metadata": {
+        "id": "JhGFkep3gU8l"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "wzJXcOpJMZ8D"
+      },
+      "source": [
+        "## 8. Reflection Questions\n",
+        "\n",
+        "**Answer the following questions based on your analysis:**\n",
+        "\n",
+        "1. **Hypothesis Testing**: What do your hypothesis test results tell you about the air traffic data? Were the results expected?\n",
+        "\n",
+        "   *TODO: Write your answer here*\n",
+        "\n",
+        "2. **Model Performance**: Which regression model performed better and why? What does the R² value tell you?\n",
+        "\n",
+        "   *TODO: Write your answer here*\n",
+        "\n",
+        "3. **Correlations**: What were the strongest correlations you found? How might these relationships be useful for airlines?\n",
+        "\n",
+        "   *TODO: Write your answer here*\n",
+        "\n",
+        "4. **Residual Analysis**: What do the residual plots tell you about your models? Are there any patterns that suggest model improvements?\n",
+        "\n",
+        "   *TODO: Write your answer here*\n",
+        "\n",
+        "5. **Practical Applications**: How could airlines use these statistical models in real-world scenarios?\n",
+        "\n",
+        "   *TODO: Write your answer here*"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "The analysis found several important patterns in the air traffic dataset. The dataset had 200 rows and 7 numeric columns, with no missing values. The average total passenger count was about 302,256 passengers, with values ranging from 163,559 to 526,087.\n",
+        "\n",
+        "The hypothesis tests showed that domestic and international passenger averages were significantly different. Domestic passengers had a higher average count than international passengers. The second hypothesis test showed a statistically significant positive correlation between total flights and total passengers. This means that as the number of flights increases, total passenger volume also tends to increase.\n",
+        "\n",
+        "The correlation analysis showed that total passengers had positive relationships with all major air traffic variables. Dom_Pax, Dom_RPM, Int_Pax, and Flt were especially related to Pax. However, correlations involving Dom_Pax and Int_Pax should be interpreted carefully because Pax is calculated from domestic and international passenger counts.\n",
+        "\n",
+        "The simple linear regression model using only total flights had limited performance, with an R² of 0.2977. This suggests that total flights alone is not enough to accurately predict passenger volume. The multiple regression model performed almost perfectly, but this was mainly because it used Dom_Pax and Int_Pax, which directly make up Pax.\n",
+        "\n",
+        "From a business perspective, airlines could use these insights to understand how flight volume relates to passenger demand. However, for a realistic predictive model, airlines should avoid using variables that directly calculate the target. Better future models could use features such as route type, season, ticket prices, airport location, holidays, aircraft capacity, and economic conditions.\n"
+      ],
+      "metadata": {
+        "id": "1sfzearwgXTl"
+      }
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.8.5"
+    },
+    "colab": {
+      "provenance": []
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
