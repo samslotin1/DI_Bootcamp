@@ -1,102 +1,139 @@
-CREATE TABLE IF NOT EXISTS public.book
+DROP TABLE IF EXISTS customer_profile;
+DROP TABLE IF EXISTS customer;
+
+CREATE TABLE customer (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE customer_profile (
+    id SERIAL PRIMARY KEY,
+    isLoggedIn BOOLEAN DEFAULT false,
+    customer_id INTEGER UNIQUE,
+    FOREIGN KEY (customer_id) REFERENCES customer(id)
+);
+
+INSERT INTO customer (first_name, last_name)
+VALUES
+('John', 'Doe'),
+('Jerome', 'Lalu'),
+('Lea', 'Rive');
+
+INSERT INTO customer_profile (isLoggedIn, customer_id)
+VALUES (
+    true,
+    (SELECT id FROM customer WHERE first_name = 'John')
+);
+
+INSERT INTO customer_profile (isLoggedIn, customer_id)
+VALUES (
+    false,
+    (SELECT id FROM customer WHERE first_name = 'Jerome')
+);
+
+SELECT customer.first_name
+FROM customer
+JOIN customer_profile
+    ON customer.id = customer_profile.customer_id
+WHERE customer_profile.isLoggedIn = true;
+
+
+DROP TABLE IF EXISTS Book;
+
+CREATE TABLE Book (
+    book_id SERIAL PRIMARY KEY,
+    title VARCHAR (50) NOT NULL,
+    author VARCHAR (50) NOT NULL
+);
+
+INSERT INTO Book (title, author)
+VALUES 
+('Alice In Wonderland', 'Lewis Carroll'),
+('Harry Potter', 'J.K Rowling'),
+('To kill a mockingbird', 'Harper Lee');
+
+SELECT * FROM Book;
+
+CREATE TABLE Student (
+    student_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    age INTEGER CHECK (age <= 15)
+);
+
+INSERT INTO Student (name, age)
+VALUES 
+('John', 12),
+('Lera', 11),
+('Patrick', 10),
+('Bob', 14);
+
+CREATE TABLE Library (
+    book_fk_id INTEGER,
+    student_fk_id INTEGER,
+    borrowed_date DATE,
+    FOREIGN KEY (book_fk_id) REFERENCES Book(book_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (student_fk_id) REFERENCES Student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (book_fk_id, student_fk_id)
+);
+
+INSERT INTO Library (book_fk_id, student_fk_id, borrowed_date)
+VALUES
 (
-    book_id integer NOT NULL DEFAULT nextval('book_book_id_seq'::regclass),
-    title character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    author character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT book_pkey PRIMARY KEY (book_id)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.book
-    OWNER to postgres;
-
-CREATE TABLE public.customer_profile
+    (SELECT book_id FROM Book WHERE title = 'Alice In Wonderland'),
+    (SELECT student_id FROM Student WHERE name = 'John'),
+    '2022-02-15'
+),
 (
-    id integer NOT NULL DEFAULT nextval('customer_profile_id_seq'::regclass),
-    "isLoggedIn" boolean DEFAULT false,
-    customer_id integer,
-    CONSTRAINT customer_profile_pkey PRIMARY KEY (id),
-    CONSTRAINT customer_profile_customer_id_key UNIQUE (customer_id),
-    CONSTRAINT customer_profile_customer_id_fkey FOREIGN KEY (customer_id)
-        REFERENCES public.customer (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.customer_profile
-    OWNER to postgres;
-
-CREATE TABLE IF NOT EXISTS public.customers
+    (SELECT book_id FROM Book WHERE title = 'To kill a mockingbird'),
+    (SELECT student_id FROM Student WHERE name = 'Bob'),
+    '2021-03-03'
+),
 (
-    id integer,
-    first_name character varying(100) COLLATE pg_catalog."default",
-    last_name character varying(100) COLLATE pg_catalog."default"
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.customers
-    OWNER to postgres;
-
-CREATE TABLE IF NOT EXISTS public.firsttab
+    (SELECT book_id FROM Book WHERE title = 'Alice In Wonderland'),
+    (SELECT student_id FROM Student WHERE name = 'Lera'),
+    '2021-05-23'
+),
 (
-    id integer,
-    name character varying(10) COLLATE pg_catalog."default"
-)
+    (SELECT book_id FROM Book WHERE title = 'Harry Potter'),
+    (SELECT student_id FROM Student WHERE name = 'Bob'),
+    '2021-08-12'
+);
 
-TABLESPACE pg_default;
+-- a) Select all columns from the junction table
+SELECT * FROM Library;
 
-ALTER TABLE IF EXISTS public.firsttab
-    OWNER to postgres;
+-- b) Student name and title of borrowed books
+SELECT s.name, b.title
+FROM Library l
+JOIN Student s ON l.student_fk_id = s.student_id
+JOIN Book b ON l.book_fk_id = b.book_id;
 
+-- c) Average age of students who borrowed Alice In Wonderland
+SELECT AVG(s.age)
+FROM Library l
+JOIN Student s ON l.student_fk_id = s.student_id
+JOIN Book b ON l.book_fk_id = b.book_id
+WHERE b.title = 'Alice In Wonderland';
 
-CREATE TABLE IF NOT EXISTS public.items
-(
-    id integer,
-    item_name character varying(100) COLLATE pg_catalog."default",
-    price integer
-)
+-- d) Delete a student, see what happens in the junction table
+DELETE FROM Student WHERE name = 'Bob';
+SELECT * FROM Library;-- a) Select all columns from the junction table
+SELECT * FROM Library;
 
-TABLESPACE pg_default;
+-- b) Student name and title of borrowed books
+SELECT s.name, b.title
+FROM Library l
+JOIN Student s ON l.student_fk_id = s.student_id
+JOIN Book b ON l.book_fk_id = b.book_id;
 
-ALTER TABLE IF EXISTS public.items
-    OWNER to postgres;
+-- c) Average age of students who borrowed Alice In Wonderland
+SELECT AVG(s.age)
+FROM Library l
+JOIN Student s ON l.student_fk_id = s.student_id
+JOIN Book b ON l.book_fk_id = b.book_id
+WHERE b.title = 'Alice In Wonderland';
 
-CREATE TABLE IF NOT EXISTS public.library
-(
-    book_fk_id integer NOT NULL,
-    student_fk_id integer NOT NULL,
-    borrowed_date date,
-    CONSTRAINT library_pkey PRIMARY KEY (book_fk_id, student_fk_id),
-    CONSTRAINT library_book_fk_id_fkey FOREIGN KEY (book_fk_id)
-        REFERENCES public.book (book_id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    CONSTRAINT library_student_fk_id_fkey FOREIGN KEY (student_fk_id)
-        REFERENCES public.student (student_id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.library
-    OWNER to postgres;
-
-CREATE TABLE IF NOT EXISTS public.student
-(
-    student_id integer NOT NULL DEFAULT nextval('student_student_id_seq'::regclass),
-    name character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    age integer,
-    CONSTRAINT student_pkey PRIMARY KEY (student_id),
-    CONSTRAINT student_name_key UNIQUE (name),
-    CONSTRAINT student_age_check CHECK (age <= 15)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.student
-    OWNER to postgres;
+-- d) Delete a student, see what happens in the junction table
+DELETE FROM Student WHERE name = 'Bob';
+SELECT * FROM Library;
