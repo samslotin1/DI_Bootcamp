@@ -1,137 +1,101 @@
-# Exercise 1
-class Pets:
-    def __init__(self,animals):
-        self.animals = animals
+import math
 
-    def walk(self):
-        for animal in self.animals:
-            animal.walk()
 
-class Cat:
-    def __init__(self,name, age):
-        self.name = name
-        self.age = age
+class PageOutOfRangeError(ValueError):
+    """Custom error raised when a requested page does not exist."""
 
-    def walk(self):
-        print(f"{self.name} is walking")
 
-class Siamese(Cat):
-    pass
+class Pagination:
+    """Represent a list of items split into smaller pages."""
 
-class Bengal(Cat):
-    pass
+    def __init__(self, items=None, page_size=10):
+        """Create a Pagination object with items, page size, and current page index."""
+        if items is None:
+            items = []
 
-class Chartreux(Cat):
-    pass
+        try:
+            page_size = int(page_size)
+        except (TypeError, ValueError):
+            raise ValueError("Page size must be a whole number.")
 
-b1 = Bengal("Bob", 4)
-c1 = Chartreux("Cathy", 5)
-s1 = Siamese("Smith", 7)
+        if page_size <= 0:
+            raise ValueError("Page size must be greater than 0.")
 
-all_cats = [b1,c1,s1]
+        self.items = items
+        self.page_size = page_size
+        self.current_idx = 0
+        self.total_pages = math.ceil(len(self.items) / self.page_size)
 
-sara_pets = Pets(all_cats)
+    def get_visible_items(self):
+        """Return the items that should appear on the current page."""
+        start_index = self.current_idx * self.page_size
+        end_index = start_index + self.page_size
+        return self.items[start_index:end_index]
 
-sara_pets.walk()
+    def go_to_page(self, page_num):
+        """Move to a specific page using 1-based page numbering."""
+        try:
+            page_num = int(page_num)
+        except (TypeError, ValueError):
+            raise ValueError("Page number must be a whole number.")
 
-# Exercise 2
+        if page_num < 1 or page_num > self.total_pages:
+            raise PageOutOfRangeError("Page number is out of range.")
 
-class Dog:
-    def __init__(self,name, age, weight):
-        self.name = name
-        self.age = age
-        self.weight = weight
+        self.current_idx = page_num - 1
+        return self
 
-    def bark(self):
-        return(f"{self.name} is barking")
+    def first_page(self):
+        """Move to the first page and return self for method chaining."""
+        self.current_idx = 0
+        return self
 
-    def run_speed(self):
-        return self.weight / self.age * 10
+    def last_page(self):
+        """Move to the last page and return self for method chaining."""
+        if self.total_pages > 0:
+            self.current_idx = self.total_pages - 1
+        return self
 
-    def fight(self, other_dog):
-        my_power =self.run_speed() * self.weight
-        other_power = other_dog.run_speed() * other_dog.weight
-        if my_power > other_power:
-            return(f"{self.name} Won")
-        else:
-            return(f"{self.name} Lost")
+    def next_page(self):
+        """Move one page forward if possible and return self for method chaining."""
+        if self.current_idx < self.total_pages - 1:
+            self.current_idx += 1
+        return self
 
-dog1 = Dog("Bob", 4, 5)
-dog2 = Dog("Smith", 7, 6)
-dog3 = Dog("Chartreux", 9, 8)
+    def previous_page(self):
+        """Move one page backward if possible and return self for method chaining."""
+        if self.current_idx > 0:
+            self.current_idx -= 1
+        return self
 
-print(dog1.bark())
-print(dog1.fight(dog2))
+    def __str__(self):
+        """Display the current page items, one item per line."""
+        return "\n".join(str(item) for item in self.get_visible_items())
 
-# Exercise 3
-import random
 
-class PetDog(Dog):
-    def __init__(self,name,age,weight):
-       super().__init__(name, age, weight)
-       self.trained = False
+if __name__ == "__main__":
+    alphabetList = list("abcdefghijklmnopqrstuvwxyz")
+    p = Pagination(alphabetList, 4)
 
-    def train(self):
-        print(self.bark())
-        self.trained = True
+    print(p.get_visible_items())
 
-    def play(self, *args):
-        names = [dog.name for dog in args]
-        print(f"{','.join(names)} all play together")
+    p.next_page()
+    print(p.get_visible_items())
 
-    def do_a_trick(self):
-       if self.trained:
-           tricks = ["does a barrel roll", "stands on his back legs", "shakes your hand", "plays dead"]
-           print(f"{self.name} {random.choice(tricks)}")
+    p.last_page()
+    print(p.get_visible_items())
 
-pd1 = PetDog("Bob", 4, 5)
-pd2 = PetDog("Rex", 3, 20)
-pd3 = PetDog("Max", 5, 15)
+    p.first_page().next_page().next_page().previous_page()
+    print(p.get_visible_items())
 
-pd1.train()
-pd1.play(pd2, pd3)
-pd1.do_a_trick()
+    try:
+        p.go_to_page(10)
+        print(p.current_idx + 1)
+    except ValueError as error:
+        print(error)
 
-# Exercise 4
-
-class Person:
-    def __init__(self,first_name, age,):
-       self.first_name = first_name
-       self.age = age
-       self.last_name = ""
-
-    def is_18(self):
-        if self.age >= 18:
-            return True
-        else:
-            return False
-class Family:
-    def __init__(self, last_name):
-        self.last_name = last_name
-        self.members = []
-
-    def born(self, first_name, age):
-        new_person = Person(first_name, age)
-        new_person.last_name = self.last_name
-        self.members.append(new_person)
-
-    def check_majority(self, first_name):
-        for person in self.members:
-            if person.first_name == first_name:
-                if person.is_18():
-                    print("You are over 18, your parents Jane and John accept that you will go out with your friends")
-                else:
-                    print("Sorry, you are not allowed to go out with your friends.")
-
-    def family_presentation(self):
-        print(self.last_name)
-        for person in self.members:
-            print(person.first_name, person.age)
-
-family = Family("Smith")
-family.born("Jane", 25)
-family.born("John", 15)
-family.check_majority("Jane")
-family.family_presentation()
-
+    try:
+        p.go_to_page(0)
+    except ValueError as error:
+        print(error)
 
