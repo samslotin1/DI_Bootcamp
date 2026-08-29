@@ -1,60 +1,255 @@
-How to clearly define and articulate a machine learning problem statement.
-The process of data collection, including identifying relevant data types and potential data sources.
-Skills in feature selection and justification for machine learning models, particularly in the context of loan default prediction.
-Understanding of different types of machine learning models and their suitability for various real-world scenarios.
-Techniques and strategies for evaluating the performance of different machine learning models, including choosing appropriate metrics and understanding their implications.
+import numpy as np
+import pandas as pd
+
+df = pd.read_csv("train_u6lujuX_CVtuZ9i (1).csv")
+
+df["Loan_Approved"] = (df["Loan_Status"] == "Y").astype(int)
+df["TotalIncome"] = df["ApplicantIncome"] + df["CoapplicantIncome"]
+df["LoanIncomeRatio"] = df["LoanAmount"] / df["TotalIncome"]
+
+print("Dataset shape:", df.shape)
+display(df.head())
+display(df.isna().sum())
+print("""
+EXERCISE 1: DEFINING THE PROBLEM AND DATA COLLECTION
+
+Problem Statement:
+The goal is to build a supervised machine learning model that predicts whether a loan applicant is likely to default, or in this dataset, whether a loan should be approved. The target variable is Loan_Status, where Y means approved and N means not approved.
+
+This is a classification problem because the model predicts a category.
+
+Data needed:
+- Applicant details: gender, marital status, dependents, education, employment type
+- Financial data: applicant income, co-applicant income, total income
+- Loan details: loan amount, loan term, property area
+- Credit information: credit history, credit score, previous defaults, repayment history
+- Target/outcome: loan approval status or actual default status
+
+Possible data sources:
+- Bank or financial institution internal records
+- Credit bureaus
+- Loan application forms
+- Repayment history databases
+- Public economic or regional datasets
+
+The data should be collected legally and ethically, with attention to privacy, consent, and fairness.
+""")
+print("EXERCISE 2: FEATURE SELECTION AND MODEL CHOICE")
+print("\nTarget variable: Loan_Status")
+print("\nApproval rate:")
+print(df["Loan_Status"].value_counts(normalize=True))
+
+print("\nMissing values:")
+display(df.isna().sum())
+
+categorical_columns = [
+    "Credit_History",
+    "Property_Area",
+    "Education",
+    "Married",
+    "Dependents",
+    "Self_Employed",
+    "Gender"
+]
+
+for column in categorical_columns:
+    print(f"\nApproval rate by {column}:")
+    display(
+        df.groupby(column, dropna=False)["Loan_Approved"]
+        .agg(["count", "mean"])
+        .rename(columns={"mean": "approval_rate"})
+        .sort_values("approval_rate", ascending=False)
+    )
+
+numeric_features = [
+    "ApplicantIncome",
+    "CoapplicantIncome",
+    "TotalIncome",
+    "LoanAmount",
+    "Loan_Amount_Term",
+    "Credit_History",
+    "LoanIncomeRatio"
+]
+
+print("\nCorrelation with loan approval:")
+display(
+    df[["Loan_Approved"] + numeric_features]
+    .corr(numeric_only=True)["Loan_Approved"]
+    .sort_values(ascending=False)
+)
+print("""
+Most relevant features:
+
+1. Credit_History
+This is the strongest feature. Applicants with a positive credit history have a much higher approval rate.
+
+2. LoanAmount
+The requested loan amount matters because larger loans may carry more risk.
+
+3. Loan_Amount_Term
+The repayment term affects affordability and risk.
+
+4. ApplicantIncome and CoapplicantIncome
+Income is important because it shows repayment ability.
+
+5. TotalIncome
+This combines applicant and co-applicant income and gives a better picture of household repayment capacity.
+
+6. LoanIncomeRatio
+This shows how large the loan is compared to income. A high ratio may suggest higher risk.
+
+7. Property_Area
+The approval rate differs across Urban, Semiurban, and Rural areas.
+
+8. Education
+Education may relate indirectly to income stability and employment opportunities.
+
+9. Married, Dependents, Self_Employed
+These features can affect financial responsibility, income stability, and repayment ability.
+
+Feature to remove:
+Loan_ID should not be used because it is only an identifier and does not help predict loan risk.
+""")
+print("""
+EXERCISE 3: TRAINING, EVALUATING, AND OPTIMIZING THE MODEL
+
+Models I would pick:
+
+1. Logistic Regression
+Good baseline model. It is simple and interpretable, which is important for loan decisions.
+
+2. Random Forest
+Good for tabular data and can capture non-linear relationships between features.
+
+3. Gradient Boosting
+Often performs very well on structured datasets and can improve prediction accuracy.
+
+Evaluation steps:
+- Split data into train and test sets.
+- Use stratified splitting so the approval/rejection ratio stays similar.
+- Handle missing values.
+- Encode categorical variables.
+- Train a baseline model.
+- Compare multiple models.
+- Use cross-validation.
+- Tune hyperparameters.
+- Check feature importance.
+- Evaluate fairness and possible bias.
+
+Useful metrics:
+- Accuracy: overall correctness
+- Precision: how many predicted approvals were actually approved
+- Recall: how many actual approved cases were found
+- F1-score: balance between precision and recall
+- ROC-AUC: ability to separate approved and rejected applicants
+- Confusion matrix: shows false approvals and false rejections
+
+For loan prediction, accuracy alone is not enough. False approvals can cost money, and false rejections can unfairly reject good applicants.
+""")
+print("""
+EXERCISE 4: MACHINE LEARNING SOLUTIONS FOR SPECIFIC PROBLEMS
+
+1. Predicting Stock Prices
+Best approach: Supervised learning / time series forecasting.
+
+Reason:
+We use historical prices, trading volume, and market indicators to predict future prices. Since the target is numeric, this is usually a regression problem.
+
+Possible models:
+- Linear regression
+- Random forest regression
+- Gradient boosting
+- LSTM or other sequence models
+
+2. Organizing a Library of Books
+Best approach: Unsupervised learning / clustering.
+
+Reason:
+If books do not already have labels, the model can group them based on similarities such as title, author, keywords, summaries, or topics.
+
+Possible models:
+- K-means clustering
+- Hierarchical clustering
+- Topic modeling
+
+3. Robot Navigation in a Maze
+Best approach: Reinforcement learning.
+
+Reason:
+The robot learns by interacting with the environment. It receives rewards for reaching the goal and penalties for wrong moves, hitting walls, or taking too long.
+
+Possible models:
+- Q-learning
+- Deep Q-Network
+
+If the full maze is already known, graph algorithms like BFS, Dijkstra, or A* can also be used.
+""")
+print("""
+EXERCISE 5: EVALUATION STRATEGY FOR DIFFERENT ML MODELS
+
+1. Supervised Learning Model: Loan Classification
+
+Example model:
+Logistic Regression or Random Forest Classifier.
+
+Evaluation strategy:
+- Use train/test split.
+- Use k-fold cross-validation.
+- Use confusion matrix.
+- Track accuracy, precision, recall, F1-score, and ROC-AUC.
+- Use ROC curve and precision-recall curve.
+- Compare against a baseline model.
+
+Challenges:
+- Data may be imbalanced.
+- Historical decisions may contain bias.
+- Accuracy may hide costly false positives.
+- Loan models need explainability.
+
+2. Unsupervised Learning Model: Book Clustering
+
+Example model:
+K-means clustering.
+
+Evaluation strategy:
+- Use elbow method to choose number of clusters.
+- Use silhouette score to check cluster quality.
+- Inspect clusters manually.
+- Compare clusters with real genres if available.
+
+Challenges:
+- No true labels may exist.
+- Clusters may be hard to interpret.
+- Books can belong to multiple genres.
+- Results depend on feature representation.
+
+3. Reinforcement Learning Model: Robot Maze Navigation
+
+Example model:
+Q-learning.
+
+Evaluation strategy:
+- Measure cumulative reward per episode.
+- Track success rate.
+- Track average steps to reach the goal.
+- Check convergence over time.
+- Test balance between exploration and exploitation.
+- Test on new mazes if generalization is needed.
+
+Challenges:
+- Training can be unstable.
+- Reward design affects behavior.
+- Too much exploration slows learning.
+- Too little exploration can lead to bad strategies.
+
+Final recommendation:
+For loan prediction, start with Logistic Regression as an interpretable baseline, then compare it with Random Forest and Gradient Boosting. Use Credit_History, income features, loan amount, loan term, property area, and derived features like TotalIncome and LoanIncomeRatio.
+""")
 
 
-🛠️ What you will create
-A detailed problem statement and data collection plan for a loan default prediction project, including identification of key data types and sources.
-A comprehensive feature selection analysis for a hypothetical loan default prediction dataset.
-A theoretical evaluation strategy for three different types of machine learning models, addressing the unique challenges and metrics relevant to each model type.
-Thoughtful analyses and justifications for choosing specific machine learning approaches for varied scenarios such as stock price prediction, library organization, and robot navigation.
-A document or presentation that showcases your understanding and approach to evaluating and optimizing machine learning models in diverse contexts.
+6:03 PM
 
 
-⚠️For these exercises, we provide a pre-filled Google Colab notebook. Download the notebook, read the instructions below, and complete the required sections directly in the Colab.
-
-Google Colab Tutorial File
-
-
-
-🌟 Exercise 1 : Defining the Problem and Data Collection for Loan Default Prediction
-Instructions
-Write a clear problem statement for predicting loan defaults.
-Identify and list the types of data you would need for this project (e.g., personal details of applicants, credit scores, loan amounts, repayment history).
-Discuss the sources where you can collect this data (e.g., financial institution’s internal records, credit bureaus).
-Expected Output: A document detailing the problem statement and a comprehensive plan for data collection, including data types and sources.
-
-
-
-🌟 Exercise 2 : Feature Selection and Model Choice for Loan Default Prediction
-Instructions
-From this dataset : Loan Predication, identify which features might be most relevant for predicting loan defaults.
-Justify your choice of features.
-
-
-🌟 Exercise 3 : Training, Evaluating, and Optimizing the Model
-Instructions
-Which model(s) would you pick for a Loan Prediction ?
-Outline the steps to evaluate the model’s performance, mentioning specific metrics that would be relevant to evaluate the model.
-
-
-🌟 Exercise 4 : Designing Machine Learning Solutions for Specific Problems
-Instructions
-For each of these scenario, decide which type of machine learning would be most suitable. Explain.
-
-Predicting Stock Prices : predict future prices
-Organizing a Library of Books : group books into genres or categories based on similarities.
-Program a robot to navigate and find the shortest path in a maze.
-
-
-🌟 Exercise 5 : Designing an Evaluation Strategy for Different ML Models
-Instructions
-Select three types of machine learning models: one from supervised learning (e.g., a classification model), one from unsupervised learning (e.g., a clustering model), and one from reinforcement learning. For the supervised model, outline a strategy to evaluate its performance, including the choice of metrics (like accuracy, precision, recall, F1-score) and methods (like cross-validation, ROC curves).
-For the unsupervised model, describe how you would assess the effectiveness of the model, considering techniques like silhouette score, elbow method, or cluster validation metrics.
-For the reinforcement learning model, discuss how you would measure its success, considering aspects like cumulative reward, convergence, and exploration vs. exploitation balance.
-Address the challenges and limitations of evaluating models in each category.
 
                                          Loan_ID,Gender,Married,Dependents,Education,Self_Employed,ApplicantIncome,CoapplicantIncome,LoanAmount,Loan_Amount_Term,Credit_History,Property_Area,Loan_Status
 LP001002,Male,No,0,Graduate,No,5849,0,,360,1,Urban,Y
