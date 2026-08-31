@@ -1,0 +1,472 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "id": "c383420c",
+      "metadata": {
+        "id": "c383420c"
+      },
+      "source": [
+        "# Exercises XP: Day 3 - BERT in Practice\n",
+        "Completed notebook with code and written explanations for each exercise.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "bbae25ca",
+      "metadata": {
+        "id": "bbae25ca"
+      },
+      "source": [
+        "## What you'll learn\n",
+        "- How to tokenize text with BERT and understand special tokens.\n",
+        "- How to run a pretrained sentiment pipeline.\n",
+        "- How to build custom BERT-based sentiment and NER analyzers.\n",
+        "- How to compare encoder (BERT) versus decoder (GPT) families.\n",
+        "- How BERT supplies retrieval power inside a RAG stack.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "c2aa5bf0",
+      "metadata": {
+        "id": "c2aa5bf0"
+      },
+      "source": [
+        "## What you will create\n",
+        "- A fully tokenized sentence with visible IDs and special tokens.\n",
+        "- A working sentiment pipeline powered by a fine-tuned DistilBERT model.\n",
+        "- Custom helper classes for sentiment classification and NER.\n",
+        "- A comparison table that contrasts BERT and GPT.\n",
+        "- A written explanation of how BERT embeddings drive retrieval in RAG.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "5ed16a45",
+      "metadata": {
+        "id": "5ed16a45"
+      },
+      "source": [
+        "> Mandatory preparation: watch \"PyTorch in 100 Seconds\" so the tensor outputs below feel intuitive."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "4304ecfe",
+      "metadata": {
+        "id": "4304ecfe"
+      },
+      "source": [
+        "## Exercise 1 - Tokenization with BERT\n",
+        "Objective: Explore how the bert-base-uncased tokenizer prepares text for model input.\n",
+        "\n",
+        "Instructions:\n",
+        "1. (Optional) Install the required libraries.\n",
+        "2. Load the tokenizer, craft a sample sentence, and encode it with padding plus truncation.\n",
+        "3. Print the tokens next to their integer IDs and flag the special tokens.\n",
+        "4. Inspect the attention mask to see how padding is hidden from the model.\n",
+        "\n",
+        "Deliverables:\n",
+        "- The code below prints the tokens and IDs, with BERT special tokens marked in a separate column.\n",
+        "- I use `max_length=24`, which leaves enough room for the sample sentence, `[CLS]`, `[SEP]`, and several `[PAD]` tokens so the attention mask is easy to inspect.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "950dde59",
+      "metadata": {
+        "id": "950dde59"
+      },
+      "outputs": [],
+      "source": [
+        "# Optional setup: install dependencies if they are missing in your environment.\n",
+        "# %pip install -q transformers torch\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "d631bc25",
+      "metadata": {
+        "id": "d631bc25"
+      },
+      "outputs": [],
+      "source": [
+        "from transformers import AutoTokenizer\n",
+        "\n",
+        "tokenizer = AutoTokenizer.from_pretrained(\"bert-base-uncased\")\n",
+        "\n",
+        "sample_sentence = \"BERT helps students understand language models quickly.\"\n",
+        "print(sample_sentence)\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "3da3ac84",
+      "metadata": {
+        "id": "3da3ac84"
+      },
+      "outputs": [],
+      "source": [
+        "encoding = tokenizer(\n",
+        "    sample_sentence,\n",
+        "    add_special_tokens=True,\n",
+        "    padding=\"max_length\",\n",
+        "    truncation=True,\n",
+        "    max_length=24,  # Enough room for this sentence plus [CLS], [SEP], and [PAD] tokens.\n",
+        "    return_attention_mask=True,\n",
+        "    return_tensors=\"pt\"\n",
+        ")\n",
+        "\n",
+        "input_ids = encoding[\"input_ids\"][0].tolist()\n",
+        "tokens = tokenizer.convert_ids_to_tokens(input_ids)\n",
+        "print(\"index | token        | id    | special\")\n",
+        "print(\"--------------------------------------\")\n",
+        "for idx, (token, token_id) in enumerate(zip(tokens, input_ids)):\n",
+        "    special = \"YES\" if token in tokenizer.all_special_tokens else \"\"\n",
+        "    print(f\"{idx:>5} | {token:<12} | {token_id:>5} | {special}\")\n",
+        "\n",
+        "print(\"\\nAttention mask:\", encoding[\"attention_mask\"][0].tolist())\n",
+        "special_positions = [(i, tok) for i, tok in enumerate(tokens) if tok in tokenizer.all_special_tokens]\n",
+        "print(\"Special tokens (index, token):\", special_positions)\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "a19d64b0",
+      "metadata": {
+        "id": "a19d64b0"
+      },
+      "source": [
+        "### Exercise 1 reflection\n",
+        "- `[CLS]` is added at the start of the sequence. In BERT-style classification tasks, the final hidden state for this position is often used as a summary representation of the full input.\n",
+        "- `[SEP]` marks the end of the sentence. For sentence-pair tasks it also separates the first sentence from the second one.\n",
+        "- The attention mask uses `1` for real tokens and `0` for padded positions. This tells the model to ignore `[PAD]` tokens during attention so padding does not affect the meaning of the sentence.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "8acfa095",
+      "metadata": {
+        "id": "8acfa095"
+      },
+      "source": [
+        "## Exercise 2 - Sentiment analysis pipeline\n",
+        "Objective: Use a pretrained DistilBERT sentiment pipeline to classify a sentence.\n",
+        "\n",
+        "Instructions:\n",
+        "1. Import the `pipeline` helper from transformers.\n",
+        "2. Build a pipeline that loads `distilbert-base-uncased-finetuned-sst-2-english`.\n",
+        "3. Pass in a sentence and review the predicted label and score.\n",
+        "\n",
+        "Deliverables:\n",
+        "- Tested sentence: `I really enjoyed this lesson because the examples made BERT feel practical.`\n",
+        "- The code below returns the predicted label and confidence score, then prints them in a readable format.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "e0418b34",
+      "metadata": {
+        "id": "e0418b34"
+      },
+      "outputs": [],
+      "source": [
+        "from transformers import pipeline\n",
+        "\n",
+        "sentiment_pipeline = pipeline(\n",
+        "    task=\"sentiment-analysis\",\n",
+        "    model=\"distilbert-base-uncased-finetuned-sst-2-english\"\n",
+        ")\n",
+        "\n",
+        "sentence = \"I really enjoyed this lesson because the examples made BERT feel practical.\"\n",
+        "prediction = sentiment_pipeline(sentence)\n",
+        "print(f\"Sentence: {sentence}\")\n",
+        "print(f\"Label: {prediction[0]['label']}\")\n",
+        "print(f\"Confidence score: {prediction[0]['score']:.4f}\")\n",
+        "prediction\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "d0caf203",
+      "metadata": {
+        "id": "d0caf203"
+      },
+      "source": [
+        "### Exercise 2 reflection\n",
+        "- The sentence is clearly positive because words like `enjoyed` and `practical` express approval, so a `POSITIVE` prediction matches my expectation.\n",
+        "- The confidence score is the model's estimated probability for the selected label. A score close to `1.0` means the model is very confident; a score closer to `0.5` would mean the decision is more uncertain.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "e7317d74",
+      "metadata": {
+        "id": "e7317d74"
+      },
+      "source": [
+        "## Exercise 3 - Custom sentiment analyzer class\n",
+        "Objective: Rebuild the pipeline manually so you control tokenization, tensors, and scoring.\n",
+        "\n",
+        "Instructions:\n",
+        "1. Import `AutoTokenizer` and `AutoModelForSequenceClassification`.\n",
+        "2. Implement `BERTSentimentAnalyzer` with methods for initialization, preprocessing, and prediction.\n",
+        "3. Test the class with multiple sentences.\n",
+        "\n",
+        "Hints:\n",
+        "- Keep a `max_length` attribute so you can reuse it while tokenizing.\n",
+        "- Apply `torch.softmax` to transform logits into probabilities.\n",
+        "- Return both the label and the probability for clarity.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "7fc452e7",
+      "metadata": {
+        "id": "7fc452e7"
+      },
+      "outputs": [],
+      "source": [
+        "import torch\n",
+        "from transformers import AutoTokenizer, AutoModelForSequenceClassification\n",
+        "from typing import Any, Dict\n",
+        "\n",
+        "class BERTSentimentAnalyzer:\n",
+        "    def __init__(self, model_name: str = \"distilbert-base-uncased-finetuned-sst-2-english\", max_length: int = 128):\n",
+        "        self.model_name = model_name\n",
+        "        self.max_length = max_length\n",
+        "        self.device = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\n",
+        "        self.tokenizer = AutoTokenizer.from_pretrained(model_name)\n",
+        "        self.model = AutoModelForSequenceClassification.from_pretrained(model_name).to(self.device)\n",
+        "        self.model.eval()\n",
+        "\n",
+        "    def preprocess(self, text: str) -> Dict[str, torch.Tensor]:\n",
+        "        cleaned_text = \" \".join(text.strip().split())\n",
+        "        encoded = self.tokenizer(\n",
+        "            cleaned_text,\n",
+        "            padding=True,\n",
+        "            truncation=True,\n",
+        "            max_length=self.max_length,\n",
+        "            return_tensors=\"pt\"\n",
+        "        )\n",
+        "        return {key: value.to(self.device) for key, value in encoded.items()}\n",
+        "\n",
+        "    def predict(self, text: str) -> Dict[str, Any]:\n",
+        "        inputs = self.preprocess(text)\n",
+        "        with torch.no_grad():\n",
+        "            outputs = self.model(**inputs)\n",
+        "\n",
+        "        probabilities = torch.softmax(outputs.logits, dim=-1)[0]\n",
+        "        predicted_index = int(torch.argmax(probabilities).item())\n",
+        "        label = self.model.config.id2label[predicted_index]\n",
+        "\n",
+        "        return {\n",
+        "            \"label\": label,\n",
+        "            \"score\": float(probabilities[predicted_index].item()),\n",
+        "            \"probabilities\": {\n",
+        "                self.model.config.id2label[i]: float(probabilities[i].item())\n",
+        "                for i in range(len(probabilities))\n",
+        "            }\n",
+        "        }\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "f0d7cc82",
+      "metadata": {
+        "id": "f0d7cc82"
+      },
+      "outputs": [],
+      "source": [
+        "analyzer = BERTSentimentAnalyzer()\n",
+        "samples = [\n",
+        "    \"The workshop was clear, useful, and surprisingly fun.\",\n",
+        "    \"The app kept crashing, and the instructions were confusing.\",\n",
+        "    \"The lecture was fine, but I wanted more examples.\"\n",
+        "]\n",
+        "\n",
+        "for text in samples:\n",
+        "    print(text)\n",
+        "    print(analyzer.predict(text))\n",
+        "    print()\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "10669267",
+      "metadata": {
+        "id": "10669267"
+      },
+      "source": [
+        "## Exercise 4 - BERT for Named Entity Recognition\n",
+        "Objective: Build a lightweight class that runs a token-classification model and maps tokens to entity labels.\n",
+        "\n",
+        "Instructions:\n",
+        "1. Import `AutoTokenizer` and `AutoModelForTokenClassification`.\n",
+        "2. Implement `BERTNamedEntityRecognizer` with init plus a `recognize` method.\n",
+        "3. Tokenize sample text, run the model, convert the predictions to entity spans, and test with a short paragraph.\n",
+        "\n",
+        "Deliverables:\n",
+        "- The `recognize` method returns a list of dictionaries like `{text, entity, start, end}` for each detected entity.\n",
+        "- Subword tokens are handled with tokenizer offset mappings, so merged entities are reconstructed from the original text rather than from raw WordPiece strings.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "6aa24c9a",
+      "metadata": {
+        "id": "6aa24c9a"
+      },
+      "outputs": [],
+      "source": [
+        "from transformers import AutoTokenizer, AutoModelForTokenClassification\n",
+        "import torch\n",
+        "\n",
+        "class BERTNamedEntityRecognizer:\n",
+        "    def __init__(self, model_name: str = \"dslim/bert-base-NER\"):\n",
+        "        self.model_name = model_name\n",
+        "        self.device = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\n",
+        "        self.tokenizer = AutoTokenizer.from_pretrained(model_name)\n",
+        "        self.model = AutoModelForTokenClassification.from_pretrained(model_name).to(self.device)\n",
+        "        self.model.eval()\n",
+        "\n",
+        "    def recognize(self, text: str):\n",
+        "        encoded = self.tokenizer(\n",
+        "            text,\n",
+        "            return_offsets_mapping=True,\n",
+        "            return_tensors=\"pt\",\n",
+        "            truncation=True\n",
+        "        )\n",
+        "        offsets = encoded.pop(\"offset_mapping\")[0].tolist()\n",
+        "        model_inputs = {key: value.to(self.device) for key, value in encoded.items()}\n",
+        "\n",
+        "        with torch.no_grad():\n",
+        "            outputs = self.model(**model_inputs)\n",
+        "\n",
+        "        predictions = torch.argmax(outputs.logits, dim=-1)[0].cpu().tolist()\n",
+        "        entities = []\n",
+        "        current_entity = None\n",
+        "\n",
+        "        def close_current_entity():\n",
+        "            nonlocal current_entity\n",
+        "            if current_entity is not None:\n",
+        "                current_entity[\"text\"] = text[current_entity[\"start\"]:current_entity[\"end\"]]\n",
+        "                entities.append(current_entity)\n",
+        "                current_entity = None\n",
+        "\n",
+        "        for prediction_id, (start, end) in zip(predictions, offsets):\n",
+        "            if start == end:\n",
+        "                continue\n",
+        "\n",
+        "            label = self.model.config.id2label[prediction_id]\n",
+        "            if label == \"O\":\n",
+        "                close_current_entity()\n",
+        "                continue\n",
+        "\n",
+        "            prefix, entity_type = label.split(\"-\", 1)\n",
+        "            should_start_new = (\n",
+        "                prefix == \"B\"\n",
+        "                or current_entity is None\n",
+        "                or current_entity[\"entity\"] != entity_type\n",
+        "                or start > current_entity[\"end\"] + 1\n",
+        "            )\n",
+        "\n",
+        "            if should_start_new:\n",
+        "                close_current_entity()\n",
+        "                current_entity = {\"text\": \"\", \"entity\": entity_type, \"start\": start, \"end\": end}\n",
+        "            else:\n",
+        "                current_entity[\"end\"] = end\n",
+        "\n",
+        "        close_current_entity()\n",
+        "        return entities\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "ddabab0a",
+      "metadata": {
+        "id": "ddabab0a"
+      },
+      "outputs": [],
+      "source": [
+        "ner = BERTNamedEntityRecognizer()\n",
+        "sample_text = \"Sundar Pichai met OpenAI researchers in San Francisco before visiting Google in Mountain View.\"\n",
+        "ner.recognize(sample_text)\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "422bc57b",
+      "metadata": {
+        "id": "422bc57b"
+      },
+      "source": [
+        "### Exercise 4 reflection\n",
+        "The recognizer uses the model's BIO labels to decide when an entity begins, continues, or ends. WordPiece fragments such as tokens that start with `##` are not joined manually; instead, the tokenizer's `offset_mapping` provides character positions in the original sentence, and each merged entity is rebuilt by slicing the original text from `start` to `end`. This preserves spacing and removes WordPiece artifacts.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "ae59c960",
+      "metadata": {
+        "id": "ae59c960"
+      },
+      "source": [
+        "## Exercise 5 - Comparing BERT and GPT\n",
+        "Objective: Summarize how encoder-style models differ from decoder-style models.\n",
+        "\n",
+        "Fill the table with concise statements (one line each).\n",
+        "\n",
+        "| Category | BERT | GPT |\n",
+        "|----------|------|-----|\n",
+        "| Architecture | Encoder-only Transformer trained with bidirectional attention. | Decoder-only Transformer trained with causal, left-to-right attention. |\n",
+        "| Primary purpose | Understanding and representing text. | Generating and continuing text. |\n",
+        "| Typical use cases | Classification, sentiment analysis, search embeddings, NER, question answering over a passage. | Chatbots, summarization, drafting, code generation, creative writing, tool-using assistants. |\n",
+        "| Strengths | Strong context understanding because every token can attend to tokens on both sides. Efficient for labeling, ranking, and retrieval tasks. | Strong fluent generation and flexible instruction following. Can produce long, coherent responses from prompts. |\n",
+        "| Weaknesses | Not designed to generate long free-form text by itself. Usually needs task-specific fine-tuning or a task head. | Less naturally suited to token-level labeling and bidirectional representation tasks. Can generate plausible text that is not grounded unless retrieval or checks are added. |\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "58dc9313",
+      "metadata": {
+        "id": "58dc9313"
+      },
+      "source": [
+        "## Exercise 6 - BERT inside Retrieval-Augmented Generation\n",
+        "Objective: Explain how BERT-generated embeddings power the retrieval stage of a RAG workflow.\n",
+        "\n",
+        "Address each bullet with a short paragraph:\n",
+        "1. BERT can encode a query and each document passage into dense vectors that capture semantic meaning. In practice, teams often use BERT-style sentence embedding models so similar questions and passages land near each other in vector space even when they do not use the exact same words.\n",
+        "2. The document embeddings are stored in a vector database such as FAISS, Pinecone, Weaviate, or Chroma. When a user asks a question, the system embeds the query, searches for the nearest document vectors with a similarity metric such as cosine similarity, and returns the most relevant passages.\n",
+        "3. The retrieved passages are inserted into the prompt for a generative model like GPT. GPT then uses the supplied context to write an answer that is grounded in the retrieved information instead of relying only on its internal training data.\n",
+        "4. A useful example is a customer-support assistant for a software company. BERT-style retrieval can find the most relevant help-center articles, release notes, and troubleshooting guides, while GPT turns those retrieved passages into a clear answer for the customer.\n"
+      ]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python",
+      "version": "3"
+    },
+    "colab": {
+      "provenance": []
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
