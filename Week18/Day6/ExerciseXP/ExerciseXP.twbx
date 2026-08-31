@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<workbook original-version='18.1' source-build='2026.1.0 (20261.26.0410.0924)' source-platform='win' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+<preferences>
+  <preference name='ui.encoding.shelf.height' value='24' />
+  <preference name='ui.shelf.height' value='26' />
+</preferences>
+<style-theme name='clean' />
+<datasources>
+<datasource caption='vgsales' inline='true' name='federated.vgsales' version='18.1'>
+  <connection class='federated'>
+    <named-connections>
+      <named-connection caption='vgsales' name='textscan.vgsales'>
+        <connection class='textscan' directory='Data' filename='vgsales.csv' password='' server='' workgroup-auth-mode='as-is' />
+      </named-connection>
+    </named-connections>
+    <relation connection='textscan.vgsales' name='vgsales.csv' table='[vgsales#csv]' type='table'>
+      <columns character-set='UTF-8' header='yes' locale='en_US' separator=',' text-qualifier='&quot;'>
+            <column datatype='integer' name='Rank' ordinal='0' />
+            <column datatype='string' name='Name' ordinal='1' />
+            <column datatype='string' name='Platform' ordinal='2' />
+            <column datatype='integer' name='Year' ordinal='3' />
+            <column datatype='string' name='Genre' ordinal='4' />
+            <column datatype='string' name='Publisher' ordinal='5' />
+            <column datatype='real' name='NA_Sales' ordinal='6' />
+            <column datatype='real' name='EU_Sales' ordinal='7' />
+            <column datatype='real' name='JP_Sales' ordinal='8' />
+            <column datatype='real' name='Other_Sales' ordinal='9' />
+            <column datatype='real' name='Global_Sales' ordinal='10' />
+      </columns>
+    </relation>
+  </connection>
+    <column datatype='integer' name='[Rank]' role='dimension' type='ordinal' />
+    <column datatype='string' name='[Name]' role='dimension' type='nominal' />
+    <column datatype='string' name='[Platform]' role='dimension' type='nominal' />
+    <column datatype='integer' name='[Year]' role='dimension' type='ordinal' />
+    <column datatype='string' name='[Genre]' role='dimension' type='nominal' />
+    <column datatype='string' name='[Publisher]' role='dimension' type='nominal' />
+    <column datatype='real' name='[NA_Sales]' role='measure' type='quantitative' />
+    <column datatype='real' name='[EU_Sales]' role='measure' type='quantitative' />
+    <column datatype='real' name='[JP_Sales]' role='measure' type='quantitative' />
+    <column datatype='real' name='[Other_Sales]' role='measure' type='quantitative' />
+    <column datatype='real' name='[Global_Sales]' role='measure' type='quantitative' />
+    <column caption='North America Sales %' datatype='real' default-format='p0%' name='[Calculation_NA_Sales_Pct]' role='measure' type='quantitative'>
+      <calculation class='tableau' formula='IF [Global_Sales] != 0 THEN [NA_Sales] / [Global_Sales] END' />
+    </column>
+    <column caption='Europe Sales %' datatype='real' default-format='p0%' name='[Calculation_EU_Sales_Pct]' role='measure' type='quantitative'>
+      <calculation class='tableau' formula='IF [Global_Sales] != 0 THEN [EU_Sales] / [Global_Sales] END' />
+    </column>
+    <column caption='Japan Sales %' datatype='real' default-format='p0%' name='[Calculation_JP_Sales_Pct]' role='measure' type='quantitative'>
+      <calculation class='tableau' formula='IF [Global_Sales] != 0 THEN [JP_Sales] / [Global_Sales] END' />
+    </column>
+    <column caption='Other Regions Sales %' datatype='real' default-format='p0%' name='[Calculation_Other_Sales_Pct]' role='measure' type='quantitative'>
+      <calculation class='tableau' formula='IF [Global_Sales] != 0 THEN [Other_Sales] / [Global_Sales] END' />
+    </column>
+  <layout dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />
+  <semantic-values>
+    <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+  </semantic-values>
+</datasource>
+</datasources>
+<worksheets>
+<worksheet name='North America Sales Trend'>
+  <layout-options>
+    <title>
+      <formatted-text>
+        <run bold='true' fontcolor='#333333' fontname='Tableau Medium' fontsize='12'>North America Sales Trend</run>
+      </formatted-text>
+    </title>
+  </layout-options>
+  <table>
+    <view>
+      <datasources>
+        <datasource caption='vgsales' name='federated.vgsales' />
+      </datasources>
+      <datasource-dependencies datasource='federated.vgsales'>
+        <column datatype='integer' name='[Year]' role='dimension' type='ordinal' />
+        <column datatype='real' name='[NA_Sales]' role='measure' type='quantitative' />
+        <column-instance column='[Year]' derivation='None' name='[none:Year:ok]' pivot='key' type='ordinal' />
+        <column-instance column='[NA_Sales]' derivation='Sum' name='[sum:NA_Sales:qk]' pivot='key' type='quantitative' />
+      </datasource-dependencies>
+      <aggregation value='true' />
+    </view>
+    <style>
+      <style-rule element='gridline'>
+        <format attr='stroke-color' value='none' scope='rows' />
+        <format attr='stroke-color' value='none' scope='cols' />
+      </style-rule>
+      <style-rule element='axis'>
+        <format attr='stroke-color' value='#e0e0e0' />
+      </style-rule>
+      <style-rule element='worksheet'>
+        <format attr='font-family' value='Tableau Book' />
+        <format attr='color' value='#333333' />
+      </style-rule>
+      <style-rule element='mark'>
+        <format attr='mark-color' value='#4e79a7' />
