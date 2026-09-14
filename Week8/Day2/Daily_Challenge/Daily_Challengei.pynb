@@ -1,374 +1,403 @@
 {
- "cells": [
-  {
-   "cell_type": "markdown",
-   "id": "70da1065",
-   "metadata": {},
-   "source": [
-    "\n",
-    "# Daily Challenge: Understanding the Essence of Machine Learning\n",
-    "\n",
-    "## Objective\n",
-    "\n",
-    "This notebook explains the basic ideas of Machine Learning, why it is important for data analysts, the main types of Machine Learning, common industry applications, and the typical process used to develop a Machine Learning model.\n",
-    "\n",
-    "The notebook also includes a simple visual flowchart showing the three main stages covered in this challenge:\n",
-    "\n",
-    "**Feature Selection → Model Selection → Model Evaluation**\n"
-   ]
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "id": "70da1065",
+      "metadata": {
+        "id": "70da1065"
+      },
+      "source": [
+        "\n",
+        "# Daily Challenge: Understanding the Essence of Machine Learning\n",
+        "\n",
+        "## Objective\n",
+        "\n",
+        "This notebook explains the basic ideas of Machine Learning, why it is important for data analysts, the main types of Machine Learning, common industry applications, and the typical process used to develop a Machine Learning model.\n",
+        "\n",
+        "The notebook also includes a simple visual flowchart showing the three main stages covered in this challenge:\n",
+        "\n",
+        "**Feature Selection → Model Selection → Model Evaluation**\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "5db50be7",
+      "metadata": {
+        "id": "5db50be7"
+      },
+      "source": [
+        "\n",
+        "## 1. What is Machine Learning?\n",
+        "\n",
+        "Machine Learning (ML) is a branch of Artificial Intelligence that allows computers to learn patterns from data and use those patterns to make predictions, classifications, or decisions without being manually programmed for every possible situation.\n",
+        "\n",
+        "Instead of writing a fixed rule for every problem, a Machine Learning model is trained using data. The model studies relationships in the data and then applies what it has learned to new information.\n",
+        "\n",
+        "### Why Machine Learning is important for data analysts\n",
+        "\n",
+        "Machine Learning is useful for data analysts because it allows them to move beyond simply describing what has already happened. Analysts can use ML to:\n",
+        "\n",
+        "- Predict future outcomes.\n",
+        "- Identify patterns that are difficult to see manually.\n",
+        "- Classify customers, products, transactions, or events.\n",
+        "- Detect unusual behavior or anomalies.\n",
+        "- Automate repetitive analytical decisions.\n",
+        "- Help businesses make data-driven decisions more quickly.\n",
+        "\n",
+        "For example, a normal analysis might show which customers stopped buying products last year. A Machine Learning model could go one step further and predict which current customers are likely to stop buying in the future.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "95b0888f",
+      "metadata": {
+        "id": "95b0888f"
+      },
+      "source": [
+        "\n",
+        "## 2. Applications of Machine Learning Across Industries\n",
+        "\n",
+        "Machine Learning is used in many different industries.\n",
+        "\n",
+        "### Healthcare\n",
+        "\n",
+        "Machine Learning can help doctors and healthcare organizations identify patterns in patient data. For example, a model could analyze medical records, laboratory results, and symptoms to estimate whether a patient is at high risk for a particular disease.\n",
+        "\n",
+        "### Finance\n",
+        "\n",
+        "Banks and financial companies use Machine Learning for fraud detection. A model can study normal transaction behavior and identify transactions that appear unusual or suspicious.\n",
+        "\n",
+        "For example, if a customer usually makes small purchases in one country and suddenly a very large purchase appears somewhere else, the system may flag the transaction for review.\n",
+        "\n",
+        "### Agriculture\n",
+        "\n",
+        "Machine Learning can help growers make better decisions using crop and environmental data. A model could use temperature, irrigation, plant-loss, soil, or weather information to estimate whether a crop batch is at high risk.\n",
+        "\n",
+        "This is useful because growers can focus their attention on the areas that are most likely to have a problem.\n",
+        "\n",
+        "### Retail\n",
+        "\n",
+        "Retail companies can use Machine Learning to recommend products, predict customer demand, and identify customers who may stop buying.\n",
+        "\n",
+        "For example, an online store can analyze a customer's previous purchases and browsing behavior to recommend products that the customer may be interested in.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "2cb263b2",
+      "metadata": {
+        "id": "2cb263b2"
+      },
+      "source": [
+        "\n",
+        "## 3. Types of Machine Learning\n",
+        "\n",
+        "There are three major types of Machine Learning: **Supervised Learning, Unsupervised Learning, and Reinforcement Learning.**\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "8cb9ca7b",
+      "metadata": {
+        "id": "8cb9ca7b"
+      },
+      "source": [
+        "\n",
+        "### Supervised Learning\n",
+        "\n",
+        "Supervised Learning uses **labeled data**. This means the training dataset already contains the correct answer that the model is trying to learn.\n",
+        "\n",
+        "The model studies the relationship between the input features and the known target value.\n",
+        "\n",
+        "Supervised Learning is commonly used for:\n",
+        "\n",
+        "- Classification\n",
+        "- Regression\n",
+        "- Prediction\n",
+        "\n",
+        "**Example scenario:**  \n",
+        "A bank has historical transactions that are labeled as either **fraudulent** or **not fraudulent**. A supervised learning model can learn from these examples and predict whether new transactions are likely to be fraudulent.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "01fab133",
+      "metadata": {
+        "id": "01fab133"
+      },
+      "source": [
+        "\n",
+        "### Unsupervised Learning\n",
+        "\n",
+        "Unsupervised Learning uses data that **does not have labeled answers**. Instead of trying to predict a known target, the model looks for hidden structures or patterns in the data.\n",
+        "\n",
+        "Unsupervised Learning is commonly used for:\n",
+        "\n",
+        "- Customer segmentation\n",
+        "- Clustering\n",
+        "- Pattern discovery\n",
+        "- Dimensionality reduction\n",
+        "\n",
+        "**Example scenario:**  \n",
+        "A retail company has information about thousands of customers but does not already know which customer groups exist. A clustering algorithm can group customers based on characteristics such as age, spending, and purchasing behavior.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "99a2697b",
+      "metadata": {
+        "id": "99a2697b"
+      },
+      "source": [
+        "\n",
+        "### Reinforcement Learning\n",
+        "\n",
+        "Reinforcement Learning involves an **agent** that learns by interacting with an environment.\n",
+        "\n",
+        "The agent takes actions and receives either rewards or penalties. Over time, it learns which actions lead to better results.\n",
+        "\n",
+        "Reinforcement Learning is often used in:\n",
+        "\n",
+        "- Robotics\n",
+        "- Games\n",
+        "- Autonomous systems\n",
+        "- Dynamic decision-making problems\n",
+        "\n",
+        "**Example scenario:**  \n",
+        "A robot learning how to navigate a warehouse can receive a positive reward when it reaches the correct location and a penalty when it crashes into an obstacle. Over many attempts, it learns a better route.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "76472100",
+      "metadata": {
+        "id": "76472100"
+      },
+      "source": [
+        "\n",
+        "## 4. Comparison of the Three Types\n",
+        "\n",
+        "| Type | Training Data | Main Goal | Example |\n",
+        "|---|---|---|---|\n",
+        "| **Supervised Learning** | Labeled | Predict a known target | Fraud detection |\n",
+        "| **Unsupervised Learning** | Unlabeled | Discover hidden patterns | Customer segmentation |\n",
+        "| **Reinforcement Learning** | Rewards and penalties | Learn the best sequence of actions | Robot navigation |\n",
+        "\n",
+        "The main difference is the type of feedback the model receives while learning.\n",
+        "\n",
+        "- Supervised Learning learns from known correct answers.\n",
+        "- Unsupervised Learning looks for patterns without known answers.\n",
+        "- Reinforcement Learning learns through rewards and penalties.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "63bd5ca4",
+      "metadata": {
+        "id": "63bd5ca4"
+      },
+      "source": [
+        "\n",
+        "## 5. The Machine Learning Model Development Process\n",
+        "\n",
+        "Developing a Machine Learning model involves several steps. This challenge focuses on three important stages:\n",
+        "\n",
+        "1. **Feature Selection**\n",
+        "2. **Model Selection**\n",
+        "3. **Model Evaluation**\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "44f68fb4",
+      "metadata": {
+        "id": "44f68fb4"
+      },
+      "source": [
+        "\n",
+        "### Stage 1: Feature Selection\n",
+        "\n",
+        "Features are the input variables that a Machine Learning model uses to make a prediction.\n",
+        "\n",
+        "Feature Selection means deciding which variables should be included in the model.\n",
+        "\n",
+        "For example, imagine that we want to predict whether a greenhouse crop batch is high risk. Possible features might include:\n",
+        "\n",
+        "- Temperature\n",
+        "- Irrigation level\n",
+        "- Plant species\n",
+        "- Greenhouse zone\n",
+        "- Humidity\n",
+        "- Weather conditions\n",
+        "\n",
+        "Good feature selection is important because irrelevant or poor-quality variables can make a model less accurate and harder to interpret.\n",
+        "\n",
+        "The goal is to choose features that contain useful information about the target we want to predict.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "7c32c884",
+      "metadata": {
+        "id": "7c32c884"
+      },
+      "source": [
+        "\n",
+        "### Stage 2: Model Selection\n",
+        "\n",
+        "Model Selection means choosing the Machine Learning algorithm that is appropriate for the problem.\n",
+        "\n",
+        "The correct model depends on several factors, including:\n",
+        "\n",
+        "- The type of problem.\n",
+        "- The amount of data.\n",
+        "- The type of variables.\n",
+        "- The need for accuracy.\n",
+        "- The need for interpretability.\n",
+        "\n",
+        "For example:\n",
+        "\n",
+        "- **Linear Regression** can be used to predict continuous numerical values.\n",
+        "- **Logistic Regression** can be used for binary classification.\n",
+        "- **Decision Trees** can be used for classification or regression.\n",
+        "- **K-Means** can be used for clustering.\n",
+        "- **Random Forest** can be used for more complex classification or regression problems.\n",
+        "\n",
+        "Usually, analysts test more than one model and compare their results.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "df78298d",
+      "metadata": {
+        "id": "df78298d"
+      },
+      "source": [
+        "\n",
+        "### Stage 3: Model Evaluation\n",
+        "\n",
+        "Model Evaluation measures how well a trained model performs on data that it did not see during training.\n",
+        "\n",
+        "This is important because a model may perform very well on training data but fail when it receives new data. This problem is known as **overfitting**.\n",
+        "\n",
+        "Different evaluation metrics are used depending on the type of model.\n",
+        "\n",
+        "For classification models, common metrics include:\n",
+        "\n",
+        "- Accuracy\n",
+        "- Precision\n",
+        "- Recall\n",
+        "- F1-score\n",
+        "- Confusion Matrix\n",
+        "\n",
+        "For regression models, common metrics include:\n",
+        "\n",
+        "- Mean Absolute Error (MAE)\n",
+        "- Mean Squared Error (MSE)\n",
+        "- R-squared\n",
+        "\n",
+        "The purpose of evaluation is to determine whether the model is accurate and reliable enough for the real-world problem.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "6308700c",
+      "metadata": {
+        "id": "6308700c"
+      },
+      "source": [
+        "\n",
+        "## 6. Machine Learning Process Flowchart\n",
+        "\n",
+        "The following Python code creates a simple diagram representing the three main stages of the Machine Learning process discussed in this challenge.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "569dfe1a",
+      "metadata": {
+        "id": "569dfe1a"
+      },
+      "outputs": [],
+      "source": [
+        "\n",
+        "import matplotlib.pyplot as plt\n",
+        "from matplotlib.patches import FancyBboxPatch, FancyArrowPatch\n",
+        "\n",
+        "fig, ax = plt.subplots(figsize=(12, 4))\n",
+        "ax.set_xlim(0, 12)\n",
+        "ax.set_ylim(0, 4)\n",
+        "ax.axis(\"off\")\n",
+        "\n",
+        "steps = [\n",
+        "    (0.7, \"Feature Selection\", \"Choose useful input variables\"),\n",
+        "    (4.5, \"Model Selection\", \"Choose an appropriate ML algorithm\"),\n",
+        "    (8.3, \"Model Evaluation\", \"Measure performance on unseen data\"),\n",
+        "]\n",
+        "\n",
+        "for x, title, subtitle in steps:\n",
+        "    box = FancyBboxPatch(\n",
+        "        (x, 1.2), 3, 1.6,\n",
+        "        boxstyle=\"round,pad=0.15\",\n",
+        "        linewidth=1.5,\n",
+        "        fill=False\n",
+        "    )\n",
+        "    ax.add_patch(box)\n",
+        "    ax.text(x + 1.5, 2.25, title, ha=\"center\", va=\"center\",\n",
+        "            fontsize=13, fontweight=\"bold\")\n",
+        "    ax.text(x + 1.5, 1.7, subtitle, ha=\"center\", va=\"center\",\n",
+        "            fontsize=9, wrap=True)\n",
+        "\n",
+        "for start_x, end_x in [(3.7, 4.5), (7.5, 8.3)]:\n",
+        "    arrow = FancyArrowPatch(\n",
+        "        (start_x, 2), (end_x, 2),\n",
+        "        arrowstyle=\"->\",\n",
+        "        mutation_scale=18,\n",
+        "        linewidth=1.5\n",
+        "    )\n",
+        "    ax.add_patch(arrow)\n",
+        "\n",
+        "plt.title(\"Basic Machine Learning Model Development Process\", fontsize=16, pad=15)\n",
+        "plt.show()\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "fb5cb5c3",
+      "metadata": {
+        "id": "fb5cb5c3"
+      },
+      "source": [
+        "\n",
+        "## 7. Conclusion\n",
+        "\n",
+        "Machine Learning is important because it allows analysts and organizations to use data not only to understand the past, but also to make predictions and improve future decisions.\n",
+        "\n",
+        "The three major types of Machine Learning are:\n",
+        "\n",
+        "- **Supervised Learning**, which learns from labeled examples.\n",
+        "- **Unsupervised Learning**, which discovers patterns in unlabeled data.\n",
+        "- **Reinforcement Learning**, which learns from rewards and penalties.\n",
+        "\n",
+        "A typical Machine Learning project also requires careful decisions about the features used, the model selected, and the way the model is evaluated.\n",
+        "\n",
+        "For data analysts, understanding these concepts is valuable because Machine Learning extends traditional analysis into prediction, classification, automation, and decision support.\n"
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python"
+    }
   },
-  {
-   "cell_type": "markdown",
-   "id": "5db50be7",
-   "metadata": {},
-   "source": [
-    "\n",
-    "## 1. What is Machine Learning?\n",
-    "\n",
-    "Machine Learning (ML) is a branch of Artificial Intelligence that allows computers to learn patterns from data and use those patterns to make predictions, classifications, or decisions without being manually programmed for every possible situation.\n",
-    "\n",
-    "Instead of writing a fixed rule for every problem, a Machine Learning model is trained using data. The model studies relationships in the data and then applies what it has learned to new information.\n",
-    "\n",
-    "### Why Machine Learning is important for data analysts\n",
-    "\n",
-    "Machine Learning is useful for data analysts because it allows them to move beyond simply describing what has already happened. Analysts can use ML to:\n",
-    "\n",
-    "- Predict future outcomes.\n",
-    "- Identify patterns that are difficult to see manually.\n",
-    "- Classify customers, products, transactions, or events.\n",
-    "- Detect unusual behavior or anomalies.\n",
-    "- Automate repetitive analytical decisions.\n",
-    "- Help businesses make data-driven decisions more quickly.\n",
-    "\n",
-    "For example, a normal analysis might show which customers stopped buying products last year. A Machine Learning model could go one step further and predict which current customers are likely to stop buying in the future.\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "95b0888f",
-   "metadata": {},
-   "source": [
-    "\n",
-    "## 2. Applications of Machine Learning Across Industries\n",
-    "\n",
-    "Machine Learning is used in many different industries.\n",
-    "\n",
-    "### Healthcare\n",
-    "\n",
-    "Machine Learning can help doctors and healthcare organizations identify patterns in patient data. For example, a model could analyze medical records, laboratory results, and symptoms to estimate whether a patient is at high risk for a particular disease.\n",
-    "\n",
-    "### Finance\n",
-    "\n",
-    "Banks and financial companies use Machine Learning for fraud detection. A model can study normal transaction behavior and identify transactions that appear unusual or suspicious.\n",
-    "\n",
-    "For example, if a customer usually makes small purchases in one country and suddenly a very large purchase appears somewhere else, the system may flag the transaction for review.\n",
-    "\n",
-    "### Agriculture\n",
-    "\n",
-    "Machine Learning can help growers make better decisions using crop and environmental data. A model could use temperature, irrigation, plant-loss, soil, or weather information to estimate whether a crop batch is at high risk.\n",
-    "\n",
-    "This is useful because growers can focus their attention on the areas that are most likely to have a problem.\n",
-    "\n",
-    "### Retail\n",
-    "\n",
-    "Retail companies can use Machine Learning to recommend products, predict customer demand, and identify customers who may stop buying.\n",
-    "\n",
-    "For example, an online store can analyze a customer's previous purchases and browsing behavior to recommend products that the customer may be interested in.\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "2cb263b2",
-   "metadata": {},
-   "source": [
-    "\n",
-    "## 3. Types of Machine Learning\n",
-    "\n",
-    "There are three major types of Machine Learning: **Supervised Learning, Unsupervised Learning, and Reinforcement Learning.**\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "8cb9ca7b",
-   "metadata": {},
-   "source": [
-    "\n",
-    "### Supervised Learning\n",
-    "\n",
-    "Supervised Learning uses **labeled data**. This means the training dataset already contains the correct answer that the model is trying to learn.\n",
-    "\n",
-    "The model studies the relationship between the input features and the known target value.\n",
-    "\n",
-    "Supervised Learning is commonly used for:\n",
-    "\n",
-    "- Classification\n",
-    "- Regression\n",
-    "- Prediction\n",
-    "\n",
-    "**Example scenario:**  \n",
-    "A bank has historical transactions that are labeled as either **fraudulent** or **not fraudulent**. A supervised learning model can learn from these examples and predict whether new transactions are likely to be fraudulent.\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "01fab133",
-   "metadata": {},
-   "source": [
-    "\n",
-    "### Unsupervised Learning\n",
-    "\n",
-    "Unsupervised Learning uses data that **does not have labeled answers**. Instead of trying to predict a known target, the model looks for hidden structures or patterns in the data.\n",
-    "\n",
-    "Unsupervised Learning is commonly used for:\n",
-    "\n",
-    "- Customer segmentation\n",
-    "- Clustering\n",
-    "- Pattern discovery\n",
-    "- Dimensionality reduction\n",
-    "\n",
-    "**Example scenario:**  \n",
-    "A retail company has information about thousands of customers but does not already know which customer groups exist. A clustering algorithm can group customers based on characteristics such as age, spending, and purchasing behavior.\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "99a2697b",
-   "metadata": {},
-   "source": [
-    "\n",
-    "### Reinforcement Learning\n",
-    "\n",
-    "Reinforcement Learning involves an **agent** that learns by interacting with an environment.\n",
-    "\n",
-    "The agent takes actions and receives either rewards or penalties. Over time, it learns which actions lead to better results.\n",
-    "\n",
-    "Reinforcement Learning is often used in:\n",
-    "\n",
-    "- Robotics\n",
-    "- Games\n",
-    "- Autonomous systems\n",
-    "- Dynamic decision-making problems\n",
-    "\n",
-    "**Example scenario:**  \n",
-    "A robot learning how to navigate a warehouse can receive a positive reward when it reaches the correct location and a penalty when it crashes into an obstacle. Over many attempts, it learns a better route.\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "76472100",
-   "metadata": {},
-   "source": [
-    "\n",
-    "## 4. Comparison of the Three Types\n",
-    "\n",
-    "| Type | Training Data | Main Goal | Example |\n",
-    "|---|---|---|---|\n",
-    "| **Supervised Learning** | Labeled | Predict a known target | Fraud detection |\n",
-    "| **Unsupervised Learning** | Unlabeled | Discover hidden patterns | Customer segmentation |\n",
-    "| **Reinforcement Learning** | Rewards and penalties | Learn the best sequence of actions | Robot navigation |\n",
-    "\n",
-    "The main difference is the type of feedback the model receives while learning.\n",
-    "\n",
-    "- Supervised Learning learns from known correct answers.\n",
-    "- Unsupervised Learning looks for patterns without known answers.\n",
-    "- Reinforcement Learning learns through rewards and penalties.\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "63bd5ca4",
-   "metadata": {},
-   "source": [
-    "\n",
-    "## 5. The Machine Learning Model Development Process\n",
-    "\n",
-    "Developing a Machine Learning model involves several steps. This challenge focuses on three important stages:\n",
-    "\n",
-    "1. **Feature Selection**\n",
-    "2. **Model Selection**\n",
-    "3. **Model Evaluation**\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "44f68fb4",
-   "metadata": {},
-   "source": [
-    "\n",
-    "### Stage 1: Feature Selection\n",
-    "\n",
-    "Features are the input variables that a Machine Learning model uses to make a prediction.\n",
-    "\n",
-    "Feature Selection means deciding which variables should be included in the model.\n",
-    "\n",
-    "For example, imagine that we want to predict whether a greenhouse crop batch is high risk. Possible features might include:\n",
-    "\n",
-    "- Temperature\n",
-    "- Irrigation level\n",
-    "- Plant species\n",
-    "- Greenhouse zone\n",
-    "- Humidity\n",
-    "- Weather conditions\n",
-    "\n",
-    "Good feature selection is important because irrelevant or poor-quality variables can make a model less accurate and harder to interpret.\n",
-    "\n",
-    "The goal is to choose features that contain useful information about the target we want to predict.\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "7c32c884",
-   "metadata": {},
-   "source": [
-    "\n",
-    "### Stage 2: Model Selection\n",
-    "\n",
-    "Model Selection means choosing the Machine Learning algorithm that is appropriate for the problem.\n",
-    "\n",
-    "The correct model depends on several factors, including:\n",
-    "\n",
-    "- The type of problem.\n",
-    "- The amount of data.\n",
-    "- The type of variables.\n",
-    "- The need for accuracy.\n",
-    "- The need for interpretability.\n",
-    "\n",
-    "For example:\n",
-    "\n",
-    "- **Linear Regression** can be used to predict continuous numerical values.\n",
-    "- **Logistic Regression** can be used for binary classification.\n",
-    "- **Decision Trees** can be used for classification or regression.\n",
-    "- **K-Means** can be used for clustering.\n",
-    "- **Random Forest** can be used for more complex classification or regression problems.\n",
-    "\n",
-    "Usually, analysts test more than one model and compare their results.\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "df78298d",
-   "metadata": {},
-   "source": [
-    "\n",
-    "### Stage 3: Model Evaluation\n",
-    "\n",
-    "Model Evaluation measures how well a trained model performs on data that it did not see during training.\n",
-    "\n",
-    "This is important because a model may perform very well on training data but fail when it receives new data. This problem is known as **overfitting**.\n",
-    "\n",
-    "Different evaluation metrics are used depending on the type of model.\n",
-    "\n",
-    "For classification models, common metrics include:\n",
-    "\n",
-    "- Accuracy\n",
-    "- Precision\n",
-    "- Recall\n",
-    "- F1-score\n",
-    "- Confusion Matrix\n",
-    "\n",
-    "For regression models, common metrics include:\n",
-    "\n",
-    "- Mean Absolute Error (MAE)\n",
-    "- Mean Squared Error (MSE)\n",
-    "- R-squared\n",
-    "\n",
-    "The purpose of evaluation is to determine whether the model is accurate and reliable enough for the real-world problem.\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "6308700c",
-   "metadata": {},
-   "source": [
-    "\n",
-    "## 6. Machine Learning Process Flowchart\n",
-    "\n",
-    "The following Python code creates a simple diagram representing the three main stages of the Machine Learning process discussed in this challenge.\n"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "569dfe1a",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "\n",
-    "import matplotlib.pyplot as plt\n",
-    "from matplotlib.patches import FancyBboxPatch, FancyArrowPatch\n",
-    "\n",
-    "fig, ax = plt.subplots(figsize=(12, 4))\n",
-    "ax.set_xlim(0, 12)\n",
-    "ax.set_ylim(0, 4)\n",
-    "ax.axis(\"off\")\n",
-    "\n",
-    "steps = [\n",
-    "    (0.7, \"Feature Selection\", \"Choose useful input variables\"),\n",
-    "    (4.5, \"Model Selection\", \"Choose an appropriate ML algorithm\"),\n",
-    "    (8.3, \"Model Evaluation\", \"Measure performance on unseen data\"),\n",
-    "]\n",
-    "\n",
-    "for x, title, subtitle in steps:\n",
-    "    box = FancyBboxPatch(\n",
-    "        (x, 1.2), 3, 1.6,\n",
-    "        boxstyle=\"round,pad=0.15\",\n",
-    "        linewidth=1.5,\n",
-    "        fill=False\n",
-    "    )\n",
-    "    ax.add_patch(box)\n",
-    "    ax.text(x + 1.5, 2.25, title, ha=\"center\", va=\"center\",\n",
-    "            fontsize=13, fontweight=\"bold\")\n",
-    "    ax.text(x + 1.5, 1.7, subtitle, ha=\"center\", va=\"center\",\n",
-    "            fontsize=9, wrap=True)\n",
-    "\n",
-    "for start_x, end_x in [(3.7, 4.5), (7.5, 8.3)]:\n",
-    "    arrow = FancyArrowPatch(\n",
-    "        (start_x, 2), (end_x, 2),\n",
-    "        arrowstyle=\"->\",\n",
-    "        mutation_scale=18,\n",
-    "        linewidth=1.5\n",
-    "    )\n",
-    "    ax.add_patch(arrow)\n",
-    "\n",
-    "plt.title(\"Basic Machine Learning Model Development Process\", fontsize=16, pad=15)\n",
-    "plt.show()\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "fb5cb5c3",
-   "metadata": {},
-   "source": [
-    "\n",
-    "## 7. Conclusion\n",
-    "\n",
-    "Machine Learning is important because it allows analysts and organizations to use data not only to understand the past, but also to make predictions and improve future decisions.\n",
-    "\n",
-    "The three major types of Machine Learning are:\n",
-    "\n",
-    "- **Supervised Learning**, which learns from labeled examples.\n",
-    "- **Unsupervised Learning**, which discovers patterns in unlabeled data.\n",
-    "- **Reinforcement Learning**, which learns from rewards and penalties.\n",
-    "\n",
-    "A typical Machine Learning project also requires careful decisions about the features used, the model selected, and the way the model is evaluated.\n",
-    "\n",
-    "For data analysts, understanding these concepts is valuable because Machine Learning extends traditional analysis into prediction, classification, automation, and decision support.\n"
-   ]
-  }
- ],
- "metadata": {
-  "colab": {
-   "include_colab_link": true,
-   "provenance": []
-  },
-  "kernelspec": {
-   "display_name": "Python 3",
-   "name": "python3"
-  },
-  "language_info": {
-   "name": "python"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
+  "nbformat": 4,
+  "nbformat_minor": 5
 }
