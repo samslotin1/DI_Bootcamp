@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<workbook original-version="18.1" source-build="2026.2" source-platform="win" version="18.1" xmlns:user="http://www.tableausoftware.com/xml/user">
+<document-format-change-manifest><AccessibleZoneTabOrder /><AnimationOnByDefault /></document-format-change-manifest><preferences><preference name="ui.encoding.shelf.height" value="24" /></preferences>
+<datasources>
+    <datasource caption="Job postings" inline="true" name="federated.job_postings" version="18.1">
+      <connection class="federated"><named-connections><named-connection caption="job_postings.csv" name="textscan.job_postings"><connection class="textscan" directory="Data" filename="job_postings.csv" password="" server="" /></named-connection></named-connections>
+        <relation connection="textscan.job_postings" name="job_postings.csv" table="[job_postings#csv]" type="table"><columns character-set="UTF-8" header="yes" locale="en" separator=",">
+            <column datatype="integer" name="Job Posting ID" ordinal="0" />
+            <column datatype="date" name="Job Posting Date" ordinal="1" />
+            <column datatype="string" name="Job Title" ordinal="2" />
+            <column datatype="string" name="Job Title Full" ordinal="3" />
+            <column datatype="string" name="Job Title Additional Info" ordinal="4" />
+            <column datatype="string" name="Job Position Type" ordinal="5" />
+            <column datatype="string" name="Job Position Level" ordinal="6" />
+            <column datatype="integer" name="Years of Experience" ordinal="7" />
+            <column datatype="string" name="Job Skills" ordinal="8" />
+            <column datatype="string" name="Job Location" ordinal="9" />
+            <column datatype="real" name="Minimum Pay" ordinal="10" />
+            <column datatype="real" name="Maximum Pay" ordinal="11" />
+            <column datatype="string" name="Pay Rate" ordinal="12" />
+            <column datatype="integer" name="Number of Applicants" ordinal="13" />
+            <column datatype="string" name="Company Name" ordinal="14" />
+            <column datatype="string" name="Company Industry" ordinal="15" />
+            <column datatype="string" name="Company Size" ordinal="16" />
+        </columns></relation><refresh increment-key="" incremental-updates="false" /></connection>
+    <column caption="Job Posting ID" datatype="integer" name="[Job Posting ID]" role="dimension" type="nominal" />
+    <column caption="Job Posting Date" datatype="date" name="[Job Posting Date]" role="dimension" type="ordinal" />
+    <column caption="Job Title" datatype="string" name="[Job Title]" role="dimension" type="nominal" />
+    <column caption="Job Title Full" datatype="string" name="[Job Title Full]" role="dimension" type="nominal" />
+    <column caption="Job Title Additional Info" datatype="string" name="[Job Title Additional Info]" role="dimension" type="nominal" />
+    <column caption="Job Position Type" datatype="string" name="[Job Position Type]" role="dimension" type="nominal" />
+    <column caption="Job Position Level" datatype="string" name="[Job Position Level]" role="dimension" type="nominal" />
+    <column caption="Years of Experience" datatype="integer" name="[Years of Experience]" role="measure" type="quantitative" />
+    <column caption="Job Skills" datatype="string" name="[Job Skills]" role="dimension" type="nominal" />
+    <column caption="Job Location" datatype="string" name="[Job Location]" role="dimension" type="nominal" />
+    <column caption="Minimum Pay" datatype="real" name="[Minimum Pay]" role="measure" type="quantitative" />
+    <column caption="Maximum Pay" datatype="real" name="[Maximum Pay]" role="measure" type="quantitative" />
+    <column caption="Pay Rate" datatype="string" name="[Pay Rate]" role="dimension" type="nominal" />
+    <column caption="Number of Applicants" datatype="integer" name="[Number of Applicants]" role="measure" type="quantitative" />
+    <column caption="Company Name" datatype="string" name="[Company Name]" role="dimension" type="nominal" />
+    <column caption="Company Industry" datatype="string" name="[Company Industry]" role="dimension" type="nominal" />
+    <column caption="Company Size" datatype="string" name="[Company Size]" role="dimension" type="nominal" />
+    <column caption="Role Group" datatype="string" name="[Calculation_Role Group]" role="dimension" type="nominal"><calculation class="tableau" formula="IF CONTAINS(LOWER([Job Title]), &apos;data scientist&apos;) OR CONTAINS(LOWER([Job Title]), &apos;machine learning&apos;) OR CONTAINS(LOWER([Job Title]), &apos;ml engineer&apos;) THEN &apos;Data Science&apos; ELSEIF CONTAINS(LOWER([Job Title]), &apos;data engineer&apos;) OR CONTAINS(LOWER([Job Title]), &apos;data architect&apos;) OR CONTAINS(LOWER([Job Title]), &apos;analytics engineer&apos;) THEN &apos;Data Engineering&apos; ELSEIF CONTAINS(LOWER([Job Title]), &apos;analyst&apos;) OR CONTAINS(LOWER([Job Title]), &apos;business intelligence&apos;) THEN &apos;Analytics&apos; ELSE &apos;Other&apos; END" /></column>
+    <column caption="Data Role Scope" datatype="string" name="[Calculation_Data Role Scope]" role="dimension" type="nominal"><calculation class="tableau" formula="IF [Calculation_Role Group] &lt;&gt; &apos;Other&apos; THEN &apos;Data relevant&apos; ELSE &apos;Other&apos; END" /></column>
+    <column caption="Average Pay" datatype="real" name="[Calculation_Average Pay]" role="measure" type="quantitative"><calculation class="tableau" formula="([Minimum Pay]+[Maximum Pay])/2" /></column>
+    </datasource>
+    <datasource caption="Skill summary" inline="true" name="federated.skill_summary" version="18.1">
+      <connection class="federated"><named-connections><named-connection caption="Job_Skill_Summary.csv" name="textscan.skill_summary"><connection class="textscan" directory="Data" filename="Job_Skill_Summary.csv" password="" server="" /></named-connection></named-connections>
+        <relation connection="textscan.skill_summary" name="Job_Skill_Summary.csv" table="[Job_Skill_Summary#csv]" type="table"><columns character-set="UTF-8" header="yes" locale="en" separator=",">
+          <column datatype="string" name="Skill" ordinal="0" /><column datatype="integer" name="Posting Mentions" ordinal="1" />
+        </columns></relation><refresh increment-key="" incremental-updates="false" /></connection>
+      <column caption="Skill" datatype="string" name="[Skill]" role="dimension" type="nominal" />
+      <column caption="Posting Mentions" datatype="integer" name="[Posting Mentions]" role="measure" type="quantitative" />
+    </datasource>
+</datasources><worksheets>
+    <worksheet name="Posting trend"><table><view><datasources><datasource caption="Job postings" name="federated.job_postings" /></datasources><datasource-dependencies datasource="federated.job_postings">
+            <column datatype="date" name="[Job Posting Date]" role="dimension" type="ordinal" />
+            <column-instance column="[Job Posting Date]" derivation="Month-Trunc" name="[tmn:Job Posting Date:qk]" pivot="key" type="quantitative" />
+            <column datatype="integer" name="[Job Posting ID]" role="dimension" type="nominal" />
+            <column-instance column="[Job Posting ID]" derivation="Count" name="[pcdf:Job Posting ID:qk]" pivot="key" type="quantitative" />
+            <column datatype="string" name="[Calculation_Data Role Scope]" role="dimension" type="nominal" />
+            <column-instance column="[Calculation_Data Role Scope]" derivation="None" name="[none:Calculation_Data Role Scope:nk]" pivot="key" type="nominal" />
+          </datasource-dependencies><filter class="categorical" column="[federated.job_postings].[none:Calculation_Data Role Scope:nk]"><groupfilter function="member" level="[none:Calculation_Data Role Scope:nk]" member="&quot;Data relevant&quot;" /></filter><aggregation value="true" /></view><style /><panes><pane selection-relaxation-option="selection-relaxation-allow"><view><breakdown value="auto" /></view><mark class="Line" /></pane></panes><rows>[federated.job_postings].[tmn:Job Posting Date:qk]</rows><cols>[federated.job_postings].[pcdf:Job Posting ID:qk]</cols></table><simple-id uuid="{POSTING-TREND-001}" /></worksheet>
+    <worksheet name="Top locations"><table><view><datasources><datasource caption="Job postings" name="federated.job_postings" /></datasources><datasource-dependencies datasource="federated.job_postings">
+            <column datatype="string" name="[Job Location]" role="dimension" type="nominal" />
+            <column-instance column="[Job Location]" derivation="None" name="[none:Job Location:nk]" pivot="key" type="nominal" />
+            <column datatype="integer" name="[Job Posting ID]" role="dimension" type="nominal" />
+            <column-instance column="[Job Posting ID]" derivation="Count" name="[pcdf:Job Posting ID:qk]" pivot="key" type="quantitative" />
+            <column datatype="string" name="[Calculation_Data Role Scope]" role="dimension" type="nominal" />
+            <column-instance column="[Calculation_Data Role Scope]" derivation="None" name="[none:Calculation_Data Role Scope:nk]" pivot="key" type="nominal" />
+          </datasource-dependencies><filter class="categorical" column="[federated.job_postings].[none:Calculation_Data Role Scope:nk]"><groupfilter function="member" level="[none:Calculation_Data Role Scope:nk]" member="&quot;Data relevant&quot;" /></filter><aggregation value="true" /></view><style /><panes><pane selection-relaxation-option="selection-relaxation-allow"><view><breakdown value="auto" /></view><mark class="Bar" /></pane></panes><rows>[federated.job_postings].[none:Job Location:nk]</rows><cols>[federated.job_postings].[pcdf:Job Posting ID:qk]</cols></table><simple-id uuid="{TOP-LOCATIONS-001}" /></worksheet>
+    <worksheet name="Top industries"><table><view><datasources><datasource caption="Job postings" name="federated.job_postings" /></datasources><datasource-dependencies datasource="federated.job_postings">
+            <column datatype="string" name="[Company Industry]" role="dimension" type="nominal" />
+            <column-instance column="[Company Industry]" derivation="None" name="[none:Company Industry:nk]" pivot="key" type="nominal" />
+            <column datatype="integer" name="[Job Posting ID]" role="dimension" type="nominal" />
+            <column-instance column="[Job Posting ID]" derivation="Count" name="[pcdf:Job Posting ID:qk]" pivot="key" type="quantitative" />
+            <column datatype="string" name="[Calculation_Data Role Scope]" role="dimension" type="nominal" />
+            <column-instance column="[Calculation_Data Role Scope]" derivation="None" name="[none:Calculation_Data Role Scope:nk]" pivot="key" type="nominal" />
+          </datasource-dependencies><filter class="categorical" column="[federated.job_postings].[none:Calculation_Data Role Scope:nk]"><groupfilter function="member" level="[none:Calculation_Data Role Scope:nk]" member="&quot;Data relevant&quot;" /></filter><aggregation value="true" /></view><style /><panes><pane selection-relaxation-option="selection-relaxation-allow"><view><breakdown value="auto" /></view><mark class="Bar" /></pane></panes><rows>[federated.job_postings].[none:Company Industry:nk]</rows><cols>[federated.job_postings].[pcdf:Job Posting ID:qk]</cols></table><simple-id uuid="{TOP-INDUSTRIES-001}" /></worksheet>
+    <worksheet name="Role mix"><table><view><datasources><datasource caption="Job postings" name="federated.job_postings" /></datasources><datasource-dependencies datasource="federated.job_postings">
+            <column datatype="string" name="[Calculation_Role Group]" role="dimension" type="nominal" />
+            <column-instance column="[Calculation_Role Group]" derivation="None" name="[none:Calculation_Role Group:nk]" pivot="key" type="nominal" />
+            <column datatype="integer" name="[Job Posting ID]" role="dimension" type="nominal" />
+            <column-instance column="[Job Posting ID]" derivation="Count" name="[pcdf:Job Posting ID:qk]" pivot="key" type="quantitative" />
+            <column datatype="string" name="[Calculation_Data Role Scope]" role="dimension" type="nominal" />
+            <column-instance column="[Calculation_Data Role Scope]" derivation="None" name="[none:Calculation_Data Role Scope:nk]" pivot="key" type="nominal" />
+          </datasource-dependencies><filter class="categorical" column="[federated.job_postings].[none:Calculation_Data Role Scope:nk]"><groupfilter function="member" level="[none:Calculation_Data Role Scope:nk]" member="&quot;Data relevant&quot;" /></filter><aggregation value="true" /></view><style /><panes><pane selection-relaxation-option="selection-relaxation-allow"><view><breakdown value="auto" /></view><mark class="Bar" /></pane></panes><rows>[federated.job_postings].[none:Calculation_Role Group:nk]</rows><cols>[federated.job_postings].[pcdf:Job Posting ID:qk]</cols></table><simple-id uuid="{ROLE-MIX-001}" /></worksheet>
+    <worksheet name="In-demand skills"><table><view><datasources><datasource caption="Skill summary" name="federated.skill_summary" /></datasources><datasource-dependencies datasource="federated.skill_summary">
+            <column datatype="string" name="[Skill]" role="dimension" type="nominal" />
+            <column-instance column="[Skill]" derivation="None" name="[none:Skill:nk]" pivot="key" type="nominal" />
+            <column datatype="integer" name="[Posting Mentions]" role="measure" type="quantitative" />
+            <column-instance column="[Posting Mentions]" derivation="Sum" name="[sum:Posting Mentions:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies><aggregation value="true" /></view><style /><panes><pane selection-relaxation-option="selection-relaxation-allow"><view><breakdown value="auto" /></view><mark class="Bar" /></pane></panes><rows>[federated.skill_summary].[none:Skill:nk]</rows><cols>[federated.skill_summary].[sum:Posting Mentions:qk]</cols></table><simple-id uuid="{IN-DEMAND-SKILLS-001}" /></worksheet>
+</worksheets><dashboards><dashboard name="DataSearch Job Market Dashboard" enable-sort-zone-taborder="true"><repository-location derived-from="https://public.tableau.com/workbooks/DataSearchJobMarket" id="DataSearchJobMarket" path="DataSearchJobMarket" revision="" /><size sizing-mode="fixed" maxheight="900" maxwidth="960" minheight="900" minwidth="960" /><zones><zone h="900" id="1" type-v2="layout-basic" w="960" x="0" y="0"><zone h="90" id="2" name="DataSearch job market dashboard" param="title" type-v2="title" w="960" x="0" y="0"><formatted-text><run bold="true" fontcolor="#16324F" fontsize="18">DataSearch Job Market Dashboard</run><run> — data roles, demand and skill signals</run></formatted-text></zone><zone h="390" id="3" name="Posting trend" show-title="true" w="480" x="0" y="90" /><zone h="390" id="4" name="Top locations" show-title="true" w="480" x="480" y="90" /><zone h="390" id="5" name="Top industries" show-title="true" w="480" x="0" y="480" /><zone h="390" id="6" name="In-demand skills" show-title="true" w="480" x="480" y="480" /></zone></zones></dashboard></dashboards>
+<windows><window class="worksheet" name="Posting trend"><cards /></window><window class="dashboard" name="DataSearch Job Market Dashboard"><viewpoint name="DataSearch Job Market Dashboard"><zoom type="entire-view" /></viewpoint><active id="DataSearch Job Market Dashboard" type="sheet" /></window></windows></workbook>
