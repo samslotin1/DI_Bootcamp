@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="820" viewBox="0 0 1360 820">
+<rect width="100%" height="100%" fill="#F7FAFC" />
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="52" y="55" font-size="26" font-weight="700" fill="#173F5F" text-anchor="start">Superstore Data Blending Dashboard</text>
+<text x="52" y="82" font-size="13" font-weight="400" fill="#52616B" text-anchor="start">$2,297,201 sales  •  $286,397 profit  •  493/7,050 returned orders</text>
+<rect x="52" y="120" width="610" height="300" rx="8" fill="#FFFFFF" stroke="#D7E0E8" />
+<text x="72" y="150" font-size="15" font-weight="700" fill="#173F5F" text-anchor="start">Sales and profit by region</text>
+<text x="72" y="188" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">West</text>
+<rect x="207" y="176" width="405.0" height="16" rx="3" fill="#167D9A" />
+<text x="620.0" y="188" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">725.4578245k</text>
+<text x="72" y="220" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">East</text>
+<rect x="207" y="208" width="378.9" height="16" rx="3" fill="#167D9A" />
+<text x="593.9419493675887" y="220" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">678.78124k</text>
+<text x="72" y="252" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Central</text>
+<rect x="207" y="240" width="279.8" height="16" rx="3" fill="#167D9A" />
+<text x="494.8262682105788" y="252" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">501.2398908k</text>
+<text x="72" y="284" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">South</text>
+<rect x="207" y="272" width="218.7" height="16" rx="3" fill="#167D9A" />
+<text x="433.6858645219561" y="284" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">391.72190500000005k</text>
+<rect x="698" y="120" width="610" height="300" rx="8" fill="#FFFFFF" stroke="#D7E0E8" />
+<text x="718" y="150" font-size="15" font-weight="700" fill="#173F5F" text-anchor="start">Return rate by category</text>
+<text x="718" y="188" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Technology</text>
+<rect x="853" y="176" width="405.0" height="16" rx="3" fill="#E87752" />
+<text x="1266.0" y="188" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">7.966321243523317%</text>
+<text x="718" y="220" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Furniture</text>
+<rect x="853" y="208" width="392.0" height="16" rx="3" fill="#E87752" />
+<text x="1252.9561971129915" y="220" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">7.709750566893423%</text>
+<text x="718" y="252" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Office Supplies</text>
+<rect x="853" y="240" width="317.9" height="16" rx="3" fill="#E87752" />
+<text x="1178.9137281485055" y="252" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">6.253340459647247%</text>
+<rect x="52" y="455" width="610" height="300" rx="8" fill="#FFFFFF" stroke="#D7E0E8" />
+<text x="72" y="485" font-size="15" font-weight="700" fill="#173F5F" text-anchor="start">Sales by regional manager</text>
+<text x="72" y="523" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Anna Andreadi</text>
+<rect x="207" y="511" width="405.0" height="16" rx="3" fill="#3B82A0" />
+<text x="620.0" y="523" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">725.4578245k</text>
+<text x="72" y="555" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Chuck Magee</text>
+<rect x="207" y="543" width="378.9" height="16" rx="3" fill="#3B82A0" />
+<text x="593.9419493675887" y="555" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">678.78124k</text>
+<text x="72" y="587" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Kelly Williams</text>
+<rect x="207" y="575" width="279.8" height="16" rx="3" fill="#3B82A0" />
+<text x="494.8262682105788" y="587" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">501.2398908k</text>
+<text x="72" y="619" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Cassandra Brandow</text>
+<rect x="207" y="607" width="218.7" height="16" rx="3" fill="#3B82A0" />
+<text x="433.6858645219561" y="619" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">391.72190500000005k</text>
+<rect x="698" y="455" width="610" height="300" rx="8" fill="#FFFFFF" stroke="#D7E0E8" />
+<text x="718" y="485" font-size="15" font-weight="700" fill="#173F5F" text-anchor="start">Profit by sub-category</text>
+<text x="718" y="523" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Copiers</text>
+<rect x="853" y="511" width="405.0" height="16" rx="3" fill="#7C5CBF" />
+<text x="1266.0" y="523" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">55.6178249k</text>
+<text x="718" y="555" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Phones</text>
+<rect x="853" y="543" width="324.2" height="16" rx="3" fill="#7C5CBF" />
+<text x="1185.1563460170482" y="555" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">44.515730600000005k</text>
+<text x="718" y="587" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Accessories</text>
+<rect x="853" y="575" width="305.4" height="16" rx="3" fill="#7C5CBF" />
+<text x="1166.3757943435864" y="587" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">41.9366357k</text>
+<text x="718" y="619" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Paper</text>
+<rect x="853" y="607" width="248.0" height="16" rx="3" fill="#7C5CBF" />
+<text x="1108.9725805764115" y="619" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">34.0535693k</text>
+<text x="718" y="651" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Binders</text>
+<rect x="853" y="639" width="220.1" height="16" rx="3" fill="#7C5CBF" />
+<text x="1081.0699894055008" y="651" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">30.2217633k</text>
+<text x="718" y="683" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Chairs</text>
+<rect x="853" y="671" width="193.6" height="16" rx="3" fill="#7C5CBF" />
+<text x="1054.6252877717266" y="683" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">26.5901663k</text>
+<text x="718" y="715" font-size="11" font-weight="400" fill="#3A4A55" text-anchor="start">Storage</text>
+<rect x="853" y="703" width="154.9" height="16" rx="3" fill="#7C5CBF" />
+<text x="1015.94897018168" y="715" font-size="11" font-weight="500" fill="#3A4A55" text-anchor="start">21.278826400000003k</text>
+</g></svg>

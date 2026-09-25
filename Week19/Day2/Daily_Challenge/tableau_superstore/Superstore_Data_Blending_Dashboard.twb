@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<workbook original-version="18.1" source-build="2026.2" source-platform="win" version="18.1" xmlns:user="http://www.tableausoftware.com/xml/user">
+  <document-format-change-manifest><AccessibleZoneTabOrder /><AnimationOnByDefault /></document-format-change-manifest>
+  <preferences><preference name="ui.encoding.shelf.height" value="24" /></preferences>
+  <datasources>
+    <datasource caption="Orders" inline="true" name="federated.orders" version="18.1">
+      <connection class="federated">
+        <named-connections><named-connection caption="Orders.csv" name="textscan.orders">
+          <connection class="textscan" directory="Data" filename="Orders.csv" password="" server="" />
+        </named-connection></named-connections>
+        <relation connection="textscan.orders" name="Orders.csv" table="[Orders#csv]" type="table"><columns character-set="windows-1252" header="yes" locale="en" separator=",">
+            <column datatype="integer" name="Row ID" ordinal="0" />
+            <column datatype="string" name="Order ID" ordinal="1" />
+            <column datatype="date" name="Order Date" ordinal="2" />
+            <column datatype="date" name="Ship Date" ordinal="3" />
+            <column datatype="string" name="Ship Mode" ordinal="4" />
+            <column datatype="string" name="Customer ID" ordinal="5" />
+            <column datatype="string" name="Customer Name" ordinal="6" />
+            <column datatype="string" name="Segment" ordinal="7" />
+            <column datatype="string" name="Country" ordinal="8" />
+            <column datatype="string" name="City" ordinal="9" />
+            <column datatype="string" name="State" ordinal="10" />
+            <column datatype="string" name="Postal Code" ordinal="11" />
+            <column datatype="string" name="Region" ordinal="12" />
+            <column datatype="string" name="Product ID" ordinal="13" />
+            <column datatype="string" name="Category" ordinal="14" />
+            <column datatype="string" name="Sub-Category" ordinal="15" />
+            <column datatype="string" name="Product Name" ordinal="16" />
+            <column datatype="real" name="Sales" ordinal="17" />
+            <column datatype="integer" name="Quantity" ordinal="18" />
+            <column datatype="real" name="Discount" ordinal="19" />
+            <column datatype="real" name="Profit" ordinal="20" />
+        </columns></relation><refresh increment-key="" incremental-updates="false" />
+      </connection>
+    <column caption="Row ID" datatype="integer" name="[Row ID]" role="dimension" type="nominal" />
+    <column caption="Order ID" datatype="string" name="[Order ID]" role="dimension" type="nominal" />
+    <column caption="Order Date" datatype="date" name="[Order Date]" role="dimension" type="ordinal" />
+    <column caption="Ship Date" datatype="date" name="[Ship Date]" role="dimension" type="ordinal" />
+    <column caption="Ship Mode" datatype="string" name="[Ship Mode]" role="dimension" type="nominal" />
+    <column caption="Customer ID" datatype="string" name="[Customer ID]" role="dimension" type="nominal" />
+    <column caption="Customer Name" datatype="string" name="[Customer Name]" role="dimension" type="nominal" />
+    <column caption="Segment" datatype="string" name="[Segment]" role="dimension" type="nominal" />
+    <column caption="Country" datatype="string" name="[Country]" role="dimension" type="nominal" />
+    <column caption="City" datatype="string" name="[City]" role="dimension" type="nominal" />
+    <column caption="State" datatype="string" name="[State]" role="dimension" type="nominal" />
+    <column caption="Postal Code" datatype="string" name="[Postal Code]" role="dimension" type="nominal" />
+    <column caption="Region" datatype="string" name="[Region]" role="dimension" type="nominal" />
+    <column caption="Product ID" datatype="string" name="[Product ID]" role="dimension" type="nominal" />
+    <column caption="Category" datatype="string" name="[Category]" role="dimension" type="nominal" />
+    <column caption="Sub-Category" datatype="string" name="[Sub-Category]" role="dimension" type="nominal" />
+    <column caption="Product Name" datatype="string" name="[Product Name]" role="dimension" type="nominal" />
+    <column caption="Sales" datatype="real" name="[Sales]" role="measure" type="quantitative" />
+    <column caption="Quantity" datatype="integer" name="[Quantity]" role="measure" type="quantitative" />
+    <column caption="Discount" datatype="real" name="[Discount]" role="measure" type="quantitative" />
+    <column caption="Profit" datatype="real" name="[Profit]" role="measure" type="quantitative" />
+
+    </datasource>
+    <datasource caption="Returns" inline="true" name="federated.returns" version="18.1">
+      <connection class="federated">
+        <named-connections><named-connection caption="Returns.csv" name="textscan.returns">
+          <connection class="textscan" directory="Data" filename="Returns.csv" password="" server="" />
+        </named-connection></named-connections>
+        <relation connection="textscan.returns" name="Returns.csv" table="[Returns#csv]" type="table"><columns character-set="windows-1252" header="yes" locale="en" separator=",">
+            <column datatype="string" name="Returned" ordinal="0" />
+            <column datatype="string" name="Order ID" ordinal="1" />
+        </columns></relation><refresh increment-key="" incremental-updates="false" />
+      </connection>
+    <column caption="Returned" datatype="string" name="[Returned]" role="dimension" type="nominal" />
+    <column caption="Order ID" datatype="string" name="[Order ID]" role="dimension" type="nominal" />
+    <column caption="Returned flag" datatype="integer" name="[Calculation_Returned flag]" role="measure" type="quantitative"><calculation class="tableau" formula="IIF([Returned] = &apos;Yes&apos;, 1, 0)" /></column>
+    </datasource>
+    <datasource caption="People" inline="true" name="federated.people" version="18.1">
+      <connection class="federated">
+        <named-connections><named-connection caption="People.csv" name="textscan.people">
+          <connection class="textscan" directory="Data" filename="People.csv" password="" server="" />
+        </named-connection></named-connections>
+        <relation connection="textscan.people" name="People.csv" table="[People#csv]" type="table"><columns character-set="windows-1252" header="yes" locale="en" separator=",">
+            <column datatype="string" name="Person" ordinal="0" />
+            <column datatype="string" name="Region" ordinal="1" />
+        </columns></relation><refresh increment-key="" incremental-updates="false" />
+      </connection>
+    <column caption="Person" datatype="string" name="[Person]" role="dimension" type="nominal" />
+    <column caption="Region" datatype="string" name="[Region]" role="dimension" type="nominal" />
+
+    </datasource>
+    <datasource caption="Blended return rate" inline="true" name="federated.blended_return_rate" version="18.1">
+      <connection class="federated">
+        <named-connections><named-connection caption="Return_Rate_by_Category.csv" name="textscan.blended_return_rate">
+          <connection class="textscan" directory="Data" filename="Return_Rate_by_Category.csv" password="" server="" />
+        </named-connection></named-connections>
+        <relation connection="textscan.blended_return_rate" name="Return_Rate_by_Category.csv" table="[Return_Rate_by_Category#csv]" type="table"><columns character-set="windows-1252" header="yes" locale="en" separator=",">
+            <column datatype="string" name="Category" ordinal="0" />
+            <column datatype="integer" name="Orders" ordinal="1" />
+            <column datatype="integer" name="Returned Orders" ordinal="2" />
+            <column datatype="real" name="Return Rate" ordinal="3" />
+        </columns></relation><refresh increment-key="" incremental-updates="false" />
+      </connection>
+    <column caption="Category" datatype="string" name="[Category]" role="dimension" type="nominal" />
+    <column caption="Orders" datatype="integer" name="[Orders]" role="measure" type="quantitative" />
+    <column caption="Returned Orders" datatype="integer" name="[Returned Orders]" role="measure" type="quantitative" />
+    <column caption="Return Rate" datatype="real" name="[Return Rate]" role="measure" type="quantitative" />
+
+    </datasource>
+    <datasource caption="Regional manager sales" inline="true" name="federated.regional_manager_sales" version="18.1">
+      <connection class="federated">
+        <named-connections><named-connection caption="Regional_Manager_Sales.csv" name="textscan.regional_manager_sales">
+          <connection class="textscan" directory="Data" filename="Regional_Manager_Sales.csv" password="" server="" />
+        </named-connection></named-connections>
+        <relation connection="textscan.regional_manager_sales" name="Regional_Manager_Sales.csv" table="[Regional_Manager_Sales#csv]" type="table"><columns character-set="windows-1252" header="yes" locale="en" separator=",">
+            <column datatype="string" name="Person" ordinal="0" />
+            <column datatype="string" name="Region" ordinal="1" />
+            <column datatype="real" name="Sales" ordinal="2" />
+        </columns></relation><refresh increment-key="" incremental-updates="false" />
+      </connection>
+    <column caption="Person" datatype="string" name="[Person]" role="dimension" type="nominal" />
+    <column caption="Region" datatype="string" name="[Region]" role="dimension" type="nominal" />
+    <column caption="Sales" datatype="real" name="[Sales]" role="measure" type="quantitative" />
+
+    </datasource>
+  </datasources><worksheets>
+    <worksheet name="Sales and profit by region"><table><view><datasources>
+          <datasource caption="Orders" name="federated.orders" />
+        </datasources><datasource-dependencies datasource="federated.orders">
+            <column datatype="string" name="[Region]" role="dimension" type="nominal" />
+            <column-instance column="[Region]" derivation="None" name="[none:Region:nk]" pivot="key" type="nominal" />
+            <column datatype="real" name="[Sales]" role="measure" type="quantitative" />
+            <column-instance column="[Sales]" derivation="Sum" name="[sum:Sales:qk]" pivot="key" type="quantitative" />
+        </datasource-dependencies><aggregation value="true" /></view><style /><panes><pane selection-relaxation-option="selection-relaxation-allow"><view><breakdown value="auto" /></view><mark class="Bar" /></pane></panes><rows>[federated.orders].[none:Region:nk]</rows><cols>[federated.orders].[sum:Sales:qk]</cols></table><simple-id uuid="{SALES-AND-PROFIT-BY-REGION-001}" /></worksheet>
+    <worksheet name="Return rate by category"><table><view><datasources><datasource caption="Blended return rate" name="federated.blended_return_rate" /></datasources><datasource-dependencies datasource="federated.blended_return_rate">
+            <column datatype="string" name="[Category]" role="dimension" type="nominal" />
+            <column-instance column="[Category]" derivation="None" name="[none:Category:nk]" pivot="key" type="nominal" />
+            <column datatype="real" name="[Return Rate]" role="measure" type="quantitative" />
+            <column-instance column="[Return Rate]" derivation="Sum" name="[sum:Return Rate:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies><aggregation value="true" /></view><style /><panes><pane selection-relaxation-option="selection-relaxation-allow"><view><breakdown value="auto" /></view><mark class="Bar" /></pane></panes><rows>[federated.blended_return_rate].[none:Category:nk]</rows><cols>[federated.blended_return_rate].[sum:Return Rate:qk]</cols></table><simple-id uuid="{RETURN-RATE-BY-CATEGORY-001}" /></worksheet>
+    <worksheet name="Sales by regional manager"><table><view><datasources><datasource caption="Regional manager sales" name="federated.regional_manager_sales" /></datasources><datasource-dependencies datasource="federated.regional_manager_sales">
+            <column datatype="string" name="[Person]" role="dimension" type="nominal" />
+            <column-instance column="[Person]" derivation="None" name="[none:Person:nk]" pivot="key" type="nominal" />
+            <column datatype="real" name="[Sales]" role="measure" type="quantitative" />
+            <column-instance column="[Sales]" derivation="Sum" name="[sum:Sales:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies><aggregation value="true" /></view><style /><panes><pane selection-relaxation-option="selection-relaxation-allow"><view><breakdown value="auto" /></view><mark class="Bar" /></pane></panes><rows>[federated.regional_manager_sales].[none:Person:nk]</rows><cols>[federated.regional_manager_sales].[sum:Sales:qk]</cols></table><simple-id uuid="{SALES-BY-REGIONAL-MANAGER-001}" /></worksheet>
+    <worksheet name="Profit by sub-category"><table><view><datasources>
+          <datasource caption="Orders" name="federated.orders" />
+        </datasources><datasource-dependencies datasource="federated.orders">
+            <column datatype="string" name="[Sub-Category]" role="dimension" type="nominal" />
+            <column-instance column="[Sub-Category]" derivation="None" name="[none:Sub-Category:nk]" pivot="key" type="nominal" />
+            <column datatype="real" name="[Profit]" role="measure" type="quantitative" />
+            <column-instance column="[Profit]" derivation="Sum" name="[sum:Profit:qk]" pivot="key" type="quantitative" />
+        </datasource-dependencies><aggregation value="true" /></view><style /><panes><pane selection-relaxation-option="selection-relaxation-allow"><view><breakdown value="auto" /></view><mark class="Bar" /></pane></panes><rows>[federated.orders].[none:Sub-Category:nk]</rows><cols>[federated.orders].[sum:Profit:qk]</cols></table><simple-id uuid="{PROFIT-BY-SUB-CATEGORY-001}" /></worksheet>
+  </worksheets><dashboards><dashboard name="Superstore Data Blending Dashboard" enable-sort-zone-taborder="true">
+    <size sizing-mode="fixed" maxheight="900" maxwidth="1200" minheight="900" minwidth="1200" /><zones><zone h="900" id="1" type-v2="layout-basic" w="1200" x="0" y="0">
+      <zone h="90" id="2" name="Superstore data blending dashboard" param="title" type-v2="title" w="1200" x="0" y="0"><formatted-text><run bold="true" fontcolor="#173F5F" fontsize="18">Superstore Data Blending Dashboard</run><run> — sales performance, returns, and regional ownership</run></formatted-text></zone>
+      <zone h="380" id="3" name="Sales and profit by region" show-title="true" w="600" x="0" y="90" /><zone h="380" id="4" name="Return rate by category" show-title="true" w="600" x="600" y="90" />
+      <zone h="430" id="5" name="Sales by regional manager" show-title="true" w="600" x="0" y="470" /><zone h="430" id="6" name="Profit by sub-category" show-title="true" w="600" x="600" y="470" />
+    </zone></zones></dashboard></dashboards>
+  <windows><window class="worksheet" name="Sales and profit by region"><cards /></window><window class="dashboard" name="Superstore Data Blending Dashboard"><viewpoint name="Superstore Data Blending Dashboard"><zoom type="entire-view" /></viewpoint><active id="Superstore Data Blending Dashboard" type="sheet" /></window></windows>
+</workbook>
